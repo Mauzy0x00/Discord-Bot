@@ -13,7 +13,7 @@ module.exports = {
         const query = 'anime slap';
         const limit = 25;
         const mediaFilter = 'minimal';
-        const slapped = interaction.options.getUser('kissed');
+        const slapped = interaction.options.getUser('slapped');
 
         const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
