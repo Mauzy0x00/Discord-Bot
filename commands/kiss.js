@@ -5,15 +5,15 @@ const { tenorAPI } = require('../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('hug')
-    .setDescription('Give someone a hug :)')
-    .addUserOption(option => option.setName('hugee').setDescription('Person to hug').setRequired(true)),
+    .setName('kiss')
+    .setDescription('Give someone a kiss ;)')
+    .addUserOption(option => option.setName('kissed').setDescription('Who u kissin?').setRequired(true)),
 
     async execute(interaction) {
-        const query = 'anime hug';
+        const query = 'anime kiss';
         const limit = 25;
         const mediaFilter = 'minimal';
-        const hugee = interaction.options.getUser('hugee');
+        const kissed = interaction.options.getUser('kissed');
 
         const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
@@ -21,10 +21,10 @@ module.exports = {
         const randomIndex = Math.floor(Math.random() * data.results.length);
         const gifUrl = data.results[randomIndex].media_formats.gif.url;
 
-        const hugEmbed = new EmbedBuilder()
-        .setDescription(`${interaction.user.username} hugged ${hugee} ❤️`)
+        const kissEmbed = new EmbedBuilder()
+        .setDescription(`${interaction.user.username} kissed ${kissed} ❤️`)
         .setImage(gifUrl);
 
-        await interaction.reply({ embeds: [hugEmbed] });
+        await interaction.reply({ embeds: [kissEmbed] });
     },
 };
