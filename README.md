@@ -29,6 +29,8 @@ Currently, the bot supports the following commands:
 
 - `/avatar`: Fetches a user's avatar.
 - `/hug`: Specify a user and the bot will send a hug gif @ that user (in development).
+- `/kiss`: Specify a user and the bot will send a kiss gif @ that user (in development).
+- `/slap`: Specify a user and the bot will send a slap gif @ that user (in development).
 - `/kick`: Doesn't kick anyone.
 - `/bing`: Replies with "Bong!".
 - `/prune`: Prune specified number of messages in the active channel.
