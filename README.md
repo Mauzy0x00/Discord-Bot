@@ -13,7 +13,7 @@ To use this bot, you will need to do the following:
 
   ``DISCORD_TOKEN=<your-bot-token-here>``
   
-4b. Alternatively, create a `config.json` file in the root directory of the project and add the following:
+ 4b. Alternatively, create a `config.json` file in the root directory of the project and add the following:
 
 <code>{
     "clientId": "Bot ID",
