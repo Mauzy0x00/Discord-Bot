@@ -1,6 +1,6 @@
 const axios = require('axios');     // axios package to make a GET request to the Tenor API and retrieve a gif
 const { SlashCommandBuilder } = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { tenorAPI } = require('../config.json');
 
 module.exports = {
@@ -10,16 +10,16 @@ module.exports = {
     .addUserOption(option => option.setName('hugee').setDescription('Person to hug').setRequired(true)),
 
     async execute(interaction) {
-        const query = 'anime-hug';
+        const query = 'anime hug';
         const limit = 1;
         const mediaFilter = 'minimal';
         const hugee = interaction.options.getUser('hugee');
 
-        const { data } = await axios.get(`https://api.tenor.com/v1/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+        const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
-        const hugEmbed = new MessageEmbed()
+        const hugEmbed = new EmbedBuilder()
         .setDescription(`Sending a hug to ${hugee} ❤️`)
-        .setImage(data.results[0].media[0].gif.url);
+        .setImage(data.results[0].media_formats.gif.url);
 
         await interaction.reply({ embeds: [hugEmbed] });
     },
