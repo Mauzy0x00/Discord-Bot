@@ -13,7 +13,7 @@ module.exports = {
         const query = 'anime-hug';
         const limit = 1;
         const mediaFilter = 'minimal';
-        const user = interaction.options.getUser('hugee');
+        const hugee = interaction.options.getUser('hugee');
 
         const { data } = await axios.get(`https://api.tenor.com/v1/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
