@@ -15,7 +15,8 @@ To use this bot, you will need to do the following:
 <code>{
     "clientId": "Bot ID",
     "guildId": "your discord server ID",
-    "token": "your bot token"
+    "token": "your bot token",
+    "tenorAPI": "your tenor api token"
       }</code>
   
 
