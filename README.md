@@ -7,9 +7,7 @@ This repository contains a simple Discord bot that I created as a learning endea
 To use this bot, you will need to do the following:
 
 1. Clone this repository to your local machine.
-2. Install the necessary dependencies by running `npm install discord.js` and 'npm install axios'. 
-
-2a. If you do not have node.js you will need to install node.js 
+2. Install the necessary dependencies by running `npm install discord.js` and 'npm install axios'. If you do not have nodejs you will need to install it
 3. Set up a Discord bot and obtain a bot token.
 4. create a `config.json` file in the root directory of the project and add the following:
 
