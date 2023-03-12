@@ -27,7 +27,7 @@ To use this bot, you will need to do the following:
 
 Currently, the bot supports the following commands:
 
-- `/avatar': Fetches a user's avatar.
+- `/avatar`: Fetches a user's avatar.
 - `/hug`: Specify a user and the bot will send a hug gif @ that user (in development).
 - `/kick`: Doesn't kick anyone.
 - `/bing`: Replies with "Bong!".
