@@ -19,7 +19,7 @@ To use this bot, you will need to do the following:
       }</code>
   
 
-5. Run the bot by running `node index.js`.
+5. Run the bot by running `node index.js`. If you want the process to run in the background without exiting use `nohup node discord-bot/index.js &`. I have not been able to run that via SSH, I had to run that on the server itself then using `exit` to logout.
 
 ## Available Commands
 
