@@ -1,7 +1,7 @@
 const axios = require('axios');     // axios package to make a GET request to the Tenor API and retrieve a gif
 const { SlashCommandBuilder } = require('discord.js');
 const { MessageEmbed } = require('discord.js');
-const { tenorAPI } = require('./config.json');
+const { tenorAPI } = require('../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
