@@ -9,7 +9,8 @@ module.exports = {
     .addStringOption(option => option.setName('prompt').setDescription('Prompt sent to ChatGPT. This costs me moneies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
-        const prompt = interaction.options.getUser('prompt').value;
+        const prompt = interaction.options.getString('prompt');
+        console.log(prompt);
 
         // Make request to OpenAI
         const configuration = new Configuration({
@@ -20,13 +21,23 @@ module.exports = {
         // Retreive language model and create completion
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
-            messages: [{role: "user", content: prompt}],
+            messages: [{role: "user", content: `\`${prompt}\``}],
           });
 
         const response = completion.data.choices[0].message;
 
-        return interaction.deferReply({ content: `ChatGPT: \`${response}\``, ephemeral: false });
+        console.log(response);
+        await interaction.deferReply({ content: `ChatGPT: \`${response}\``, ephemeral: false });
     },
 };
+
+
+
+
+
+
+
+
+
 
 
