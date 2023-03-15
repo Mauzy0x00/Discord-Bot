@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { Configuration, OpenAIApi } = require("openai");
-const { OpenAIApi } = require('../config.json');
+const { OpenAIApiKey } = require('../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ module.exports = {
 
         // Make request to OpenAI
         const configuration = new Configuration({
-            apiKey: process.env.OpenAIApi,
+            apiKey: OpenAIApiKey,
           });
         const openai = new OpenAIApi(configuration);
 
