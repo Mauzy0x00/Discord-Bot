@@ -31,7 +31,7 @@ module.exports = {
         response = response.replace(/\n\n/, "ChatGPT: ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
         console.log(response);
         
-        await interaction.editReply({ content: `${interaction.user.username}: \`${prompt}\` \n\n \`${response}\``});
+        await interaction.editReply({ content: `${interaction.user.username}: \`${prompt}\` \n\n ChatGPT:\`${response}\``});
     },
 };
 
