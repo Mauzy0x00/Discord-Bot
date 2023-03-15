@@ -1,3 +1,4 @@
+
 const { SlashCommandBuilder } = require('discord.js');
 const { Configuration, OpenAIApi } = require("openai");
 const { OpenAIApiKey } = require('../config.json');
@@ -6,11 +7,13 @@ module.exports = {
     data: new SlashCommandBuilder()
     .setName('chat')
     .setDescription('Use ChatGPT')
-    .addStringOption(option => option.setName('prompt').setDescription('Prompt sent to ChatGPT. This costs me moneies, please be nice :)').setRequired(true)),
+    .addStringOption(option => option.setName('prompt').setDescription('Prompt sent to ChatGPT. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
         console.log(prompt);
+
+        await interaction.deferReply();  // tell discord to wait 15 min 
 
         // Make request to OpenAI
         const configuration = new Configuration({
@@ -23,11 +26,12 @@ module.exports = {
             model: "gpt-3.5-turbo",
             messages: [{role: "user", content: `\`${prompt}\``}],
           });
-
-        const response = completion.data.choices[0].message;
-
+        
+        response  = completion.data.choices[0].message.content;
+        response = response.replace(/\n\n/, "ChatGPT: ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
         console.log(response);
-        await interaction.deferReply({ content: `ChatGPT: \`${response}\``, ephemeral: false });
+        
+        await interaction.editReply({ content: `${interaction.user.username}: \`${prompt}\` \n\n \`${response}\``});
     },
 };
 
