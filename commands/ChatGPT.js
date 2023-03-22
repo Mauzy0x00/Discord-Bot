@@ -37,8 +37,6 @@ module.exports = {
         
         // Discord can only send messages that contain less than 200 characters. Check this before sending. 
         if (sizeCheck.length > 2000){
-
-          //await interaction.editReply("Chat returned a string larger than 2000 :( . \nCan't send the response from ChatGPT. Please ask chat to be brief. Working on a fix for this...");
           // create .txt file. send txt file and delete from server
           // if cannot delete txt from java script, have javascript call a bash file
 
