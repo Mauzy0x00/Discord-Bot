@@ -28,10 +28,17 @@ module.exports = {
           });
         
         response  = completion.data.choices[0].message.content;
-        response = response.replace(/\n\n/, "ChatGPT: ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
+        response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
         console.log(response);
-        
+
+        const sizeCheck = `${interaction.user.username}: ${prompt} \n\n ChatGPT: ${response}`;
+
+        // Discord can only send messages that contain less than 200 characters. Check this before sending. 
+        if (sizeCheck.length > 2000){
+          await interaction.editReply("Chat returned a string larger than 2000 :( . \nCan't send the response from ChatGPT. Please ask chat to be brief. Working on a fix for this...");
+        } else {
         await interaction.editReply({ content: `${interaction.user.username}: \`${prompt}\` \n\n ChatGPT:\`${response}\``});
+        }
     },
 };
 
