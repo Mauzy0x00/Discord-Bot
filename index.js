@@ -14,12 +14,32 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 // Commands Class
 client.commands = new Collection();
 
-// Construct a path to the commands directory
-const commandsPath = path.join(__dirname, 'commands');
+// Construct an array of objects with the path and directory name for each commands directory
+const commandsDirectories = [
+	{ path: path.join(__dirname, 'commands'), name: '' },						// ./commands
+	{ path: path.join(__dirname, 'commands', 'actions'), name: 'actions' },     // ./commands/actions
+	{ path: path.join(__dirname, 'commands', 'emotes'), name: 'emotes' },	    // ./commands/emotes
+  ];
 
-// Read the path directory and return an array of all the file names it contains
+// Loop through each directory and read its contents. Do this for every direcory specified above. 
 // Array.filter() removes any non-JavaScript files from the array
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('js'));
+for (const { path: dirPath } of commandsDirectories) {
+	const commandFiles = fs.readdirSync(dirPath).filter(file => file.endsWith('.js'));
+
+	// Now the correct files have been identified; Loop over the array and dynamically set each command into the client.commands Collection
+	// For each file being loaded, check that it has at least the data and execute properties. --this prevents errors resulting from loading empty, unfinished or otherwise incorrect command files
+	for (const file of commandFiles) {
+		const filePath = path.join(dirPath, file);
+		const command = require(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			client.commands.set(command.data.name, command);
+		}
+		else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
 
 // Code to dynamically retrieve all of the event files in the events folder
 // fs.readdirSync().filter() returns an array of all the file names in the given directory and filters for only .js files, i.e. ['ready.js', 'interactionCreate.js']
@@ -37,19 +57,6 @@ for (const file of eventFiles) {
 	}
 	else {
 		client.on(event.name, (...args) => event.execute(...args));
-	}
-}
-// Now the correct files have been identified; Loop over the array and dynamically set each command into the client.commands Collection
-// For each file being loaded, check that it has at least the data and execute properties. --this prevents errors resulting from loading empty, unfinished or otherwise incorrect command files
-for (const file of commandFiles) {
-	const filePath = path.join(commandsPath, file);
-	const command = require(filePath);
-	// Set a new item in the Collection with the key as the command name and the value as the exported module
-	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
-	}
-	else {
-		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}
 }
 
