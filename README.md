@@ -8,7 +8,7 @@ To use this bot, you will need to do the following:
 
 1. Clone this repository to your local machine.
 2. If you do not have nodejs you will need to install it. One method of installation on a windows machine: `winget install OpenJS.NodeJS`
-3. Install the necessary dependencies by running `npm install discord.js`, `npm install openai`, `npm install axios`. If you do not have nodejs you will need to install it.
+3. Install the necessary dependencies by running `sudo apt install nodejs`, `npm install discord.js`, `npm install openai`, `npm install axios`. 
 4. Set up a Discord bot through the discord developer portal and obtain a bot token.
 5. Create an account at OpenAI and obtain an API key.
 6. Create an account at Tenor and obtain an API key.
