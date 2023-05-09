@@ -15,7 +15,7 @@ module.exports = {
         const mediaFilter = 'minimal';
         const hold = interaction.options.getUser('cuteuser');
 
-        const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+        const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
         // Choose a random gif 
         const randomIndex = Math.floor(Math.random() * data.results.length);
@@ -25,7 +25,7 @@ module.exports = {
         // filter out gifs that do not match intended search
         while (gifUrl == `https://images-ext-2.discordapp.net/external/ZGDv8X7EQ4Idhm5FyR4GNfnbUcTS4oyg_0AKvGIjhGU/https/media.tenor.com/MtLleHERk0cAAAAC/younger-tv-younger.gif`) {
 
-            const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+            const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
             // Choose a random gif 
             randomIndex = Math.floor(Math.random() * data.results.length);

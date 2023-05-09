@@ -14,17 +14,21 @@ module.exports = {
         const limit = 25;
         const mediaFilter = 'minimal';
         const hugee = interaction.options.getUser('hugee');
+        try {
+            const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
-        const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+            // Choose a random gif 
+            const randomIndex = Math.floor(Math.random() * data.results.length);
+            const gifUrl = data.results[randomIndex].media_formats.gif.url;
 
-        // Choose a random gif 
-        const randomIndex = Math.floor(Math.random() * data.results.length);
-        const gifUrl = data.results[randomIndex].media_formats.gif.url;
+            const hugEmbed = new EmbedBuilder()
+            .setDescription(`${interaction.user.username} hugged ${hugee} ❤️`)
+            .setImage(gifUrl);
 
-        const hugEmbed = new EmbedBuilder()
-        .setDescription(`${interaction.user.username} hugged ${hugee} ❤️`)
-        .setImage(gifUrl);
-
-        await interaction.reply({ embeds: [hugEmbed] });
+            await interaction.reply({ embeds: [hugEmbed] });
+            
+        } catch (error) {
+            console.error(error);
+        }
     },
 };

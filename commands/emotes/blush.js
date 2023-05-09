@@ -23,7 +23,7 @@ module.exports = {
         while (gifUrl == `https://media.tenor.com/XGuDQkV7v3YAAAAC/corgi-furry.gif` 
                 || gifUrl == `https://media.tenor.com/8xDEVy0S3nAAAAAC/flaik-fox.gif`) {
 
-            const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+            const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
             // Choose a random gif 
             randomIndex = Math.floor(Math.random() * data.results.length);

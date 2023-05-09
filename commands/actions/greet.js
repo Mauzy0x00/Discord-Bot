@@ -15,7 +15,7 @@ module.exports = {
         const mediaFilter = 'minimal';
         const greet = interaction.options.getUser('cuteuser');
 
-        const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+        const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
         // Choose a random gif 
         const randomIndex = Math.floor(Math.random() * data.results.length);
