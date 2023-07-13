@@ -1,5 +1,5 @@
 
-const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const { Configuration, OpenAIApi } = require("openai");
 const { OpenAIApiKey } = require('../config.json');
 const fs = require('fs');
@@ -36,6 +36,7 @@ module.exports = {
 
           const sizeCheck = `${interaction.user.username}: ${prompt} \n\n ChatGPT: ${response}`;
           
+
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
           if (sizeCheck.length > 2000){
             // create .txt file. send txt file and delete from server
@@ -52,8 +53,25 @@ module.exports = {
             
             interaction.editReply({ files: [attachment] });
 
-          } else {
+          } 
+          // Embeded fields can only contain 1024 characters
+          else if(sizeCheck.length > 1024) {
+            
             await interaction.editReply({ content: `${interaction.user.username}: \`${prompt}\` \n\n ChatGPT:\`${response}\``});
+          
+          } else { // end size check
+
+            const GPTresponseEmbed = new EmbedBuilder()
+              .setColor(0x0099FF)
+              .setTitle('AI interface')
+              .setDescription(prompt)
+              .setAuthor({ name: interaction.user.username })
+              .addFields({ name: 'AI response:', value: response })
+              .setTimestamp()
+              .setFooter({ text: 'Provided by ChatGPT 3.5 Turbo API'});
+
+            await interaction.editReply({ embeds: [GPTresponseEmbed]});
+          
           }
         } catch(Error) {
           console.error(Error);
