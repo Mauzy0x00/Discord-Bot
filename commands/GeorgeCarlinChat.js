@@ -7,9 +7,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('chat')
-    .setDescription('Use ChatGPT')
-    .addStringOption(option => option.setName('prompt').setDescription('Prompt sent to ChatGPT. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('carlin_chat')
+    .setDescription('Talk to George Carlin')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk with the one and only George Carlin. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -27,14 +27,14 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.createChatCompletion({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `\`${prompt}\``}],
+              messages: [{role: "user", content: `Respond to the following as if you are the great Comedian George Carlin. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
             });
           
           response  = completion.data.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n ChatGPT: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n George: ${response}`;
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
@@ -57,7 +57,7 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length > 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*ChatGPT:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*George:\*\* \n ${response}`});
           
           } else { // end size check
 
@@ -65,8 +65,8 @@ module.exports = {
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
               .setDescription(prompt)
-              .setAuthor({ name: 'AI Interface', iconURL: 'http://www.myconfinedspace.com/wp-content/uploads/2017/09/Skynet-Logo-1.png'})
-              .addFields({ name: 'AI response:', value: response })
+              .setAuthor({ name: 'George Carlin', iconURL: 'https://s.hdnux.com/photos/23/13/41/5027909/3/1200x0.jpg'})
+              .addFields({ name: 'George:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});

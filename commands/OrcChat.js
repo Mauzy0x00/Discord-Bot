@@ -7,9 +7,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('chat')
-    .setDescription('Use ChatGPT')
-    .addStringOption(option => option.setName('prompt').setDescription('Prompt sent to ChatGPT. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('orc_chat')
+    .setDescription('Chat with Grak')
+    .addStringOption(option => option.setName('prompt').setDescription('Speak with Grak the Orc. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -27,14 +27,14 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.createChatCompletion({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `\`${prompt}\``}],
+              messages: [{role: "user", content: `Respond to the following as if you are an impatient Orc named Grak: ${prompt}. `}],
             });
           
           response  = completion.data.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n ChatGPT: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Grak: ${response}`;
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
@@ -57,7 +57,7 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length > 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*ChatGPT:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Grak:\*\* \n ${response}`});
           
           } else { // end size check
 
@@ -65,8 +65,8 @@ module.exports = {
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
               .setDescription(prompt)
-              .setAuthor({ name: 'AI Interface', iconURL: 'http://www.myconfinedspace.com/wp-content/uploads/2017/09/Skynet-Logo-1.png'})
-              .addFields({ name: 'AI response:', value: response })
+              .setAuthor({ name: 'Grak Chat', iconURL: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/88e39bc8-2533-40fc-bccd-5fe75d3e2b24/dabpjs1-9519b278-20e7-4866-9ca0-59ecbd6a1660.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTpmaWxlLmRvd25sb2FkIl0sIm9iaiI6W1t7InBhdGgiOiIvZi84OGUzOWJjOC0yNTMzLTQwZmMtYmNjZC01ZmU3NWQzZTJiMjQvZGFicGpzMS05NTE5YjI3OC0yMGU3LTQ4NjYtOWNhMC01OWVjYmQ2YTE2NjAuanBnIn1dXX0.EY0NRW_z-5mcP5XUZxEeIahQ11po6SkRWAOE4mzYkeg'})
+              .addFields({ name: 'Grak:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});
