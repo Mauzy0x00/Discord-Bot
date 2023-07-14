@@ -9,7 +9,7 @@ module.exports = {
     data: new SlashCommandBuilder()
     .setName('marcus_chat')
     .setDescription('Talk to Marcus Aurelius')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk with the great stoic Marcus Aurelius. This costs me monies, please be nice :)').setRequired(true)),
+    .addStringOption(option => option.setName('prompt').setDescription('Talk with the great stoicMarcus Aurelius. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -27,7 +27,7 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.createChatCompletion({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the amazing stoic and leader Marcus Aurelius. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the amazing Marcus Aurelius. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
             });
           
           response  = completion.data.choices[0].message.content;
