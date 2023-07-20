@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`;
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Grak:\*\* \n ${response}`});
           
@@ -64,6 +64,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F1.bp.blogspot.com%2F-oruHzA4zurk%2FYDcfRXVK7aI%2FAAAAAAAAGcM%2FEgMOnqypJPkF_GRNtEoocRoi6WE75wFCwCLcBGAsYHQ%2Fw1200-h630-p-k-no-nu%2FAzog.png&f=1&nofb=1&ipt=b5cacbf40997be64eed29e51764ab21a1dfd9d24849e3417885981ac72333108&ipo=images')
               .setDescription(prompt)
               .setAuthor({ name: 'Grak Chat', iconURL: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/88e39bc8-2533-40fc-bccd-5fe75d3e2b24/dabpjs1-9519b278-20e7-4866-9ca0-59ecbd6a1660.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTpmaWxlLmRvd25sb2FkIl0sIm9iaiI6W1t7InBhdGgiOiIvZi84OGUzOWJjOC0yNTMzLTQwZmMtYmNjZC01ZmU3NWQzZTJiMjQvZGFicGpzMS05NTE5YjI3OC0yMGU3LTQ4NjYtOWNhMC01OWVjYmQ2YTE2NjAuanBnIn1dXX0.EY0NRW_z-5mcP5XUZxEeIahQ11po6SkRWAOE4mzYkeg'})
               .addFields({ name: 'Grak:', value: response })

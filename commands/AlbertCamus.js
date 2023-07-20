@@ -37,14 +37,14 @@ module.exports = {
           const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Albert: ${response}`;
           
 
-          // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          // Discord can only send messages that contain less than 2000 characters. Check this before sending. 
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Albert:\*\* \n ${response}`});
           
@@ -64,6 +64,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('https://www.laphamsquarterly.org/sites/default/files/styles/tall_rectangle_custom_user_small_2x/public/images/contributor/camus_360x450.jpg?itok=FDsUC3qu&timestamp=1409685824')
               .setDescription(prompt)
               .setAuthor({ name: 'Albert Camus', iconURL: 'https://d24fkeqntp1r7r.cloudfront.net/wp-content/uploads/2019/03/25203058/DxIUC7uX0AIlkJz.jpg'})
               .addFields({ name: 'Albert:', value: response })

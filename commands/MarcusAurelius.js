@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Marcus:\*\* \n ${response}`});
           
@@ -64,6 +64,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.WRGbzTdE4O1TvdbefUI1HgHaLH%26pid%3DApi&f=1&ipt=df9ac75efc5298291a06d871efb7ace545e418686d2f2b57a7bd1e3e8a014c4c&ipo=images')
               .setDescription(prompt)
               .setAuthor({ name: 'Marcus Aurelius', iconURL: 'https://www.thefamouspeople.com/profiles/images/marcus-aurelius-9.jpg'})
               .addFields({ name: 'Marcus:', value: response })

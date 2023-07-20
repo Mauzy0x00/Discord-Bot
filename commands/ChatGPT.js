@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*ChatGPT:\*\* \n ${response}`});
           
@@ -64,8 +64,9 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F0%2F04%2FChatGPT_logo.svg%2F1200px-ChatGPT_logo.svg.png&f=1&nofb=1&ipt=dd92c63f8df347da0a856f7ed557712d5b1648004fb0c687f8278b15dcc17f6d&ipo=images')
               .setDescription(prompt)
-              .setAuthor({ name: 'AI Interface', iconURL: 'http://www.myconfinedspace.com/wp-content/uploads/2017/09/Skynet-Logo-1.png'})
+              .setAuthor({ name: 'AI Interface', iconURL: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F0%2F04%2FChatGPT_logo.svg%2F1200px-ChatGPT_logo.svg.png&f=1&nofb=1&ipt=dd92c63f8df347da0a856f7ed557712d5b1648004fb0c687f8278b15dcc17f6d&ipo=images'})
               .addFields({ name: 'AI response:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 

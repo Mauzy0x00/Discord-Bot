@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`;
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Rust player:\*\* \n ${response}`});
           
@@ -64,6 +64,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('https://i.ytimg.com/vi/7NeDffShtO4/maxresdefault.jpg')
               .setDescription(prompt)
               .setAuthor({ name: 'Rust Player', iconURL: 'https://d1lss44hh2trtw.cloudfront.net/assets/editorial/2016/04/rust3.jpg'})
               .addFields({ name: 'Player:', value: response })

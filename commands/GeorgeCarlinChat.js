@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*George:\*\* \n ${response}`});
           
@@ -64,6 +64,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
+              .setThumbnail('http://theinterrobang.com/wp-content/uploads/2012/09/George-Carlin.jpg')
               .setDescription(prompt)
               .setAuthor({ name: 'George Carlin', iconURL: 'https://s.hdnux.com/photos/23/13/41/5027909/3/1200x0.jpg'})
               .addFields({ name: 'George:', value: response })

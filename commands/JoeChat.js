@@ -38,13 +38,13 @@ module.exports = {
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
-          if (sizeCheck.length > 2000){
+          if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = response; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -55,7 +55,7 @@ module.exports = {
 
           } 
           // Embeded fields can only contain 1024 characters
-          else if(sizeCheck.length > 1024) {
+          else if(sizeCheck.length >= 1024) {
             
             await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Joe:\*\* \n ${response}`});
           
@@ -64,8 +64,9 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setDescription(prompt)
-              .setAuthor({ name: 'Joe Rogan', iconURL: 'https://dmn-dallas-news-prod.cdn.arcpublishing.com/resizer/DOsh-WD_0e_TCpC5RbLaW6ZjwEo=/1660x934/smart/filters:no_upscale()/cloudfront-us-east-1.images.arcpublishing.com/dmn/UXWAHKCZEBGCBOFJBW5AC4V3NA.png'})
+              .setThumbnail('https://www.imore.com/sites/imore.com/files/styles/large/public/field/image/2020/05/joe-rogan.jpg')
+              .setDescription(prompt)      
+              .setAuthor({ name: 'Joe Rogan', iconURL: 'https://radiotoday.com.au/wp-content/uploads/The-Joe-Rogan-Experience.jpg'})
               .addFields({ name: 'Joe:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
