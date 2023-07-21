@@ -6,15 +6,15 @@ module.exports = {
     .setDescription('create a poll')
     .addStringOption(option => option.setName('message').setDescription('Message').setRequired(true))
     .addStringOption(option => option.setName('Choice1').setDescription('Choice 1').setRequired(true))
-    .addStringOption(option => option.setName('Choice2').setDescription('Choice 2').setRequired(true))
-    .addStringOption(option => option.setName('Choice3').setDescription('Choice 3').setRequired(true))
-    .addStringOption(option => option.setName('Choice4').setDescription('Choice 4').setRequired(true))
-    .addStringOption(option => option.setName('Choice5').setDescription('Choice 5').setRequired(true))
-    .addStringOption(option => option.setName('Choice6').setDescription('Choice 6').setRequired(true))
-    .addStringOption(option => option.setName('Choice7').setDescription('Choice 7').setRequired(true))
-    .addStringOption(option => option.setName('Choice8').setDescription('Choice 8').setRequired(true))
-    .addStringOption(option => option.setName('Choice9').setDescription('Choice 9').setRequired(true))
-    .addStringOption(option => option.setName('Choice10').setDescription('Choice 10').setRequired(true)),
+    .addStringOption(option => option.setName('Choice2').setDescription('Choice 2').setRequired(false))
+    .addStringOption(option => option.setName('Choice3').setDescription('Choice 3').setRequired(false))
+    .addStringOption(option => option.setName('Choice4').setDescription('Choice 4').setRequired(false))
+    .addStringOption(option => option.setName('Choice5').setDescription('Choice 5').setRequired(false))
+    .addStringOption(option => option.setName('Choice6').setDescription('Choice 6').setRequired(false))
+    .addStringOption(option => option.setName('Choice7').setDescription('Choice 7').setRequired(false))
+    .addStringOption(option => option.setName('Choice8').setDescription('Choice 8').setRequired(false))
+    .addStringOption(option => option.setName('Choice9').setDescription('Choice 9').setRequired(false))
+    .addStringOption(option => option.setName('Choice10').setDescription('Choice 10').setRequired(false)),
 
     async execute(interaction) {
         const message = interaction.options.getString('message');
