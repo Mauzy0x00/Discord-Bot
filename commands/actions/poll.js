@@ -43,7 +43,7 @@ module.exports = {
 
         // Add fields for number of options selected
         for(let i = 0; i <= num_options; i++) {
-            pollEmbed.addFields(`${emojis[i]} ${choices[i]}`)
+            pollEmbed.addFields(`${emojis[i]} ${choices[i]}`);
         }
 
         // send embed and assign the message id to pollMessage
