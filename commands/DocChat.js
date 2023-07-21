@@ -66,7 +66,7 @@ module.exports = {
               .setTitle(`${interaction.user.username}:`)
               .setThumbnail('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.ccn.com%2Fwp-content%2Fuploads%2F2020%2F07%2FDr-Disrespect-Twitch-e1594888751704.jpg&f=1&nofb=1&ipt=ffd77e6330f7f140bac9662c59075fb6b4beea0069896c19fefa72974d9beef0&ipo=images')
               .setDescription(prompt)      
-              .setAuthor({ name: 'Dr. Disrespect', iconURL: 'https://radiotoday.com.au/wp-content/uploads/The-Joe-Rogan-Experience.jpg'})
+              .setAuthor({ name: 'Dr. Disrespect', iconURL: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fres.cloudinary.com%2Fteepublic%2Fimage%2Fprivate%2Fs--9ngB6RlE--%2Ft_Preview%2Fb_rgb%3A191919%2Cc_limit%2Cf_auto%2Ch_630%2Cq_90%2Cw_630%2Fv1597762212%2Fproduction%2Fdesigns%2F13183552_0.jpg&f=1&nofb=1&ipt=fa2c10ce0b62fa4131c8712cff933a717fce33c02953a1204fadcaa192eeef94&ipo=images'})
               .addFields({ name: 'Doc:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
