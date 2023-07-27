@@ -2,56 +2,61 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('poll create')
-    .setDescription('create a poll')
+    .setName('poll_create')
+    .setDescription('create a poll (max 10 choices)')
     .addStringOption(option => option.setName('message').setDescription('Message').setRequired(true))
-    .addStringOption(option => option.setName('Choice1').setDescription('Choice 1').setRequired(true))
-    .addStringOption(option => option.setName('Choice2').setDescription('Choice 2').setRequired(false))
-    .addStringOption(option => option.setName('Choice3').setDescription('Choice 3').setRequired(false))
-    .addStringOption(option => option.setName('Choice4').setDescription('Choice 4').setRequired(false))
-    .addStringOption(option => option.setName('Choice5').setDescription('Choice 5').setRequired(false))
-    .addStringOption(option => option.setName('Choice6').setDescription('Choice 6').setRequired(false))
-    .addStringOption(option => option.setName('Choice7').setDescription('Choice 7').setRequired(false))
-    .addStringOption(option => option.setName('Choice8').setDescription('Choice 8').setRequired(false))
-    .addStringOption(option => option.setName('Choice9').setDescription('Choice 9').setRequired(false))
-    .addStringOption(option => option.setName('Choice10').setDescription('Choice 10').setRequired(false)),
+    .addStringOption(option => option.setName('choiceone').setDescription('Choice 1').setRequired(true))
+    .addStringOption(option => option.setName('choicetwo').setDescription('Choice 2').setRequired(true))
+    .addStringOption(option => option.setName('choicethree').setDescription('Choice 3'))
+    .addStringOption(option => option.setName('choicefour').setDescription('Choice 4'))
+    .addStringOption(option => option.setName('choicefive').setDescription('Choice 5'))
+    .addStringOption(option => option.setName('choicesix').setDescription('Choice 6'))
+    .addStringOption(option => option.setName('choiceseven').setDescription('Choice 7'))
+    .addStringOption(option => option.setName('choiceeight').setDescription('Choice 8'))
+    .addStringOption(option => option.setName('choicenine').setDescription('Choice 9'))
+    .addStringOption(option => option.setName('choiceten').setDescription('Choice 10')),
 
     async execute(interaction) {
         const message = interaction.options.getString('message');
-        const choice1 = interaction.options.getString('Choice1');
-        const choice2 = interaction.options.getString('Choice2');
-        const choice3 = interaction.options.getString('Choice3');
-        const choice4 = interaction.options.getString('Choice4');
-        const choice5 = interaction.options.getString('Choice5');
-        const choice6 = interaction.options.getString('Choice6');
-        const choice7 = interaction.options.getString('Choice7');
-        const choice8 = interaction.options.getString('Choice8');
-        const choice9 = interaction.options.getString('Choice9');
-        const choice10 = interaction.options.getString('Choice10');
-
+        const choice1 = interaction.options.getString('choiceone');
+        const choice2 = interaction.options.getString('choicetwo');
+        const choice3 = interaction.options.getString('choicethree');
+        const choice4 = interaction.options.getString('choicefour');
+        const choice5 = interaction.options.getString('choicefive');
+        const choice6 = interaction.options.getString('choicesix');
+        const choice7 = interaction.options.getString('choiceseven');
+        const choice8 = interaction.options.getString('choiceeight');
+        const choice9 = interaction.options.getString('choicenine');
+        const choice10 = interaction.options.getString('choiceten');
 
         // Create arrays with the reaction emojis and choice variables
-        const emojis = ['1️⃣', '2️⃣', '3️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+        const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
         
         const choices = [ choice1, choice2, choice3, choice4, choice5, choice6, choice7, choice8, choice9, choice10 ]
+        
+        // Determine how many options are used 
+        let numberOptionsUsed = 0;
+        for(let i = 0; i <= choices.length; i++) {
+            if(choices[i] == null) break;
+            numberOptionsUsed++
+        }
 
-
-        // Need to some how only show fields that are necessary 
         const pollEmbed = new EmbedBuilder()
             .setColor(0x00C995)
             .setTitle(message);
 
         // Add fields for number of options selected
-        for(let i = 0; i <= num_options; i++) {
-            pollEmbed.addFields(`${emojis[i]} ${choices[i]}`);
+        for(let i = 0; i < numberOptionsUsed; i++) {
+            let field = emojis[i] + "  " + choices[i];
+            pollEmbed.addFields({ name: ' ', value: field });
         }
 
         // send embed and assign the message id to pollMessage
-        const pollMessage = interaction.reply({ embeds: [pollEmbed], fetchReply: true });
+        const pollMessage = await interaction.reply({ embeds: [pollEmbed], fetchReply: true });
         
 
         // Iterate and send reaction emotes for # of options used
-        for(let i = 0; i <= num_options; i++) {
+        for(let i = 0; i < numberOptionsUsed; i++) {
             pollMessage.react(emojis[i]);
         }
     } // end interaction
