@@ -57,7 +57,7 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Joe:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Doc:\*\* \n ${response}`});
           
           } else { // end size check
 
