@@ -14,8 +14,16 @@ module.exports = {
         const limit = 25;
         const mediaFilter = 'minimal';
         const lick = interaction.options.getUser('cuteuser');
+        
+        // filter out gifs that do not match intended search
+        while (gifUrl == `https://media.tenor.com/ZIfFiEBuKsAAAAAC/kiss-anime.gif`) {
 
-        const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+            const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+
+            // Choose a random gif 
+            randomIndex = Math.floor(Math.random() * data.results.length);
+            gifUrl = data.results[randomIndex].media_formats.gif.url;
+        }
 
         // Choose a random gif 
         const randomIndex = Math.floor(Math.random() * data.results.length);
