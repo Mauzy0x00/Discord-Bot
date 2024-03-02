@@ -10,7 +10,7 @@ To use this bot, you will need to do the following:
 2. If you do not have nodejs you will need to install it. One method of installation on a windows machine: `winget install OpenJS.NodeJS`
    NOTE: Installing node via apt may result in installing an old version of node that is incompatible. Please ensure you have the correct verison of node if you have errors on the next steps.
 4. Install the necessary dependencies by running `sudo apt install nodejs`, `npm install discord.js`, `npm install openai`, `npm install axios`. 
-5. Set up a Discord bot through the discord developer portal and obtain a bot token.
+5. Set up a Discord bot through the Discord developer portal and obtain a bot token. (Review Discord documentation if needed)
 6. Create an account at OpenAI and obtain an API key.
 7. Create an account at Tenor and obtain an API key.
 8. Create a `config.json` file in the root directory of the project and add the following:
@@ -25,8 +25,15 @@ To use this bot, you will need to do the following:
       }</code>
   
 8. Test your build by running `node deploy-commands.js` in the root directory of the project. 
-9. Run the bot by running `node index.js`. If you want the process to run in the background without exiting use `nohup node discord-bot/index.js &`. I have not been able to run that via SSH, I had to run that on the server itself then using `exit` to logout.
-
+9. Run the bot by running `node index.js`. If you want the process to run in the background without exiting use `nohup node discord-bot/index.js &`.
+#### Starting the bot via SSH
+1. Install tmux on your server `sudo apt install tmux`.
+2. Start tmux by typing `tmux`.
+   Note: If you get an error here, ensure you are using the same command-line interpreter as your server. In otherwords, if you are using kitty and zsh, but your server is using bash, tmux will fail. Be sure to use bash.
+3. Start the bot in the tmux session `nohup node discord-bot/index.js &`.
+4. Leave and detatch by typing `Ctrl+b` then press `d`.
+   You can now leave your remote session and the process will continue running.
+   
 ## Available Commands
 
 Currently, the bot supports the following commands:
