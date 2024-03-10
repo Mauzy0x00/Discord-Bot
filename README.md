@@ -9,6 +9,10 @@ To use this bot, you will need to do the following:
 1. Clone this repository to your local machine.
 2. If you do not have nodejs you will need to install it. One method of installation on a windows machine: `winget install OpenJS.NodeJS`
    NOTE: Installing node via apt may result in installing an old version of node that is incompatible. Please ensure you have the correct verison of node if you have errors on the next steps.
+   #### You must change versions of node
+   - By default, apt will install an old version of npm and therefore installs and old version of discordjs which does not have support for slash commands.
+   - You can use nvm to manage versions of node and npm. Doing so is outside of the scope of this tutorial.
+   - Node version must be v20.4.0 or greater. Npm version must be v9.7.2 or greater.
 4. Install the necessary dependencies by running `sudo apt install nodejs`, `npm install discord.js`, `npm install openai`, `npm install axios`. 
 5. Set up a Discord bot through the Discord developer portal and obtain a bot token. (Review Discord documentation if needed)
 6. Create an account at OpenAI and obtain an API key.
