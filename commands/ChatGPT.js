@@ -1,7 +1,5 @@
-
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
-const { Configuration, OpenAIApi } = require("openai");
-const { OpenAIApiKey } = require('../config.json');
+const OpenAI = require("openai");
 const fs = require('fs');
 const path = require('path');
 
@@ -19,18 +17,15 @@ module.exports = {
           await interaction.deferReply();  // tell discord to wait 15 min 
 
           // Make request to OpenAI
-          const configuration = new Configuration({
-              apiKey: OpenAIApiKey,
-            });
-          const openai = new OpenAIApi(configuration);
+          const openai = new OpenAI(); // API Change
 
           // Retreive language model and create completion
-          const completion = await openai.createChatCompletion({
+          const completion = await openai.chat.completions.create({  // API Change
               model: "gpt-3.5-turbo",
               messages: [{role: "user", content: `\`${prompt}\``}],
             });
           
-          response  = completion.data.choices[0].message.content;
+          response  = completion.choices[0].message.content;  // API Change
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 

@@ -1,7 +1,6 @@
 
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
-const { Configuration, OpenAIApi } = require("openai");
-const { OpenAIApiKey } = require('../config.json');
+const OpenAI = require("openai");
 const fs = require('fs');
 const path = require('path');
 
@@ -25,13 +24,10 @@ module.exports = {
           const secretGPTresponseEmbed = privateResponse();
 
           // Make request to OpenAI
-          const configuration = new Configuration({
-              apiKey: OpenAIApiKey,
-            });
-          const openai = new OpenAIApi(configuration);
+          const openai = new OpenAI();
 
         // Retreive language model and create completion
-          const completion = await openai.createChatCompletion({
+          const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
               messages: [{role: "user", content: `Respond to the following as if you are the psychologist, Carl G. Yung. As Carl, you are to analyze and bring meaning to a dream; feel free to ask follow up questions for clarity. To the best of your abilities, try to encapsulate Carl Jung in your response: ${prompt}. `}],
             });

@@ -1,7 +1,6 @@
 
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
-const { Configuration, OpenAIApi } = require("openai");
-const { OpenAIApiKey } = require('../config.json');
+const OpenAI = require("openai");
 const fs = require('fs');
 const path = require('path');
 
@@ -19,13 +18,11 @@ module.exports = {
           await interaction.deferReply();  // tell discord to wait 15 min 
 
           // Make request to OpenAI
-          const configuration = new Configuration({
-              apiKey: OpenAIApiKey,
-            });
-          const openai = new OpenAIApi(configuration);
+
+          const openai = new OpenAI(configuration);
 
           // Retreive language model and create completion
-          const completion = await openai.createChatCompletion({
+          const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
               messages: [{role: "user", content: `Respond to the following as if you are the great philosopher Albert Camuss. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
             });

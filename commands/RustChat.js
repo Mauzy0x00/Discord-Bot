@@ -1,7 +1,6 @@
 
 const { SlashCommandBuilder, AttachmentBuilder, EmbedBuilder } = require('discord.js');
-const { Configuration, OpenAIApi } = require("openai");
-const { OpenAIApiKey } = require('../config.json');
+const OpenAI = require("openai");
 const fs = require('fs');
 const path = require('path');
 
@@ -19,13 +18,10 @@ module.exports = {
           await interaction.deferReply();  // tell discord to wait 15 min 
 
           // Make request to OpenAI
-          const configuration = new Configuration({
-              apiKey: OpenAIApiKey,
-            });
-          const openai = new OpenAIApi(configuration);
+          const openai = new OpenAIApi();
 
           // Retreive language model and create completion
-          const completion = await openai.createChatCompletion({
+          const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
               messages: [{role: "user", content: `Respond to the following as if you are the average rust player. The game of rust is extremely toxic and includes many explicitives. Please try to emulate the toxicity and hatred of a rust player in your response: ${prompt}. `}],
             });
