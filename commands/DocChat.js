@@ -26,7 +26,7 @@ module.exports = {
               messages: [{role: "user", content: `Respond to the following as if you are the 2x back to back 1995 1996 video game champ Dr. Disrespect. Try to encapsulate this legend and his vulgarities in your response: : ${prompt} `}],
             });
           
-          response  = completion.data.choices[0].message.content;
+          response  = completion.choices[0].message.content;;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 

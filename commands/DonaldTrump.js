@@ -6,9 +6,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('camus_chat')
-    .setDescription('Talk to Albert Camus')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk with the great philosopher Albert Camus. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('trump_chat')
+    .setDescription('Talk to Donald Trump')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk with President Donald J Trump. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -19,19 +19,19 @@ module.exports = {
 
           // Make request to OpenAI
 
-          const openai = new OpenAI(configuration);
+          const openai = new OpenAI();
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the great president Donald J Trump. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the great president, Donald J Trump. To the best of your abilities, try to encapsulate this legend in your response. You should be the version of Trump that is only seen behind closed doors, saying what he really means and wants to say god damn it:  ${prompt}. `}],
             });
           
-          response  = completion.data.choices[0].message.content;
+          response  = completion.choices[0].message.content;;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Albert: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Donald: ${response}`;
           
 
           // Discord can only send messages that contain less than 2000 characters. Check this before sending. 
@@ -54,17 +54,17 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Albert:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Donald:\*\* \n ${response}`});
           
           } else { // end size check
 
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://www.laphamsquarterly.org/sites/default/files/styles/tall_rectangle_custom_user_small_2x/public/images/contributor/camus_360x450.jpg?itok=FDsUC3qu&timestamp=1409685824')
+              .setThumbnail('https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/6XQSLOC3JEI6VGZV3322AJ6UOA.jpg&w=1440')
               .setDescription(prompt)
-              .setAuthor({ name: 'Albert Camus', iconURL: 'https://d24fkeqntp1r7r.cloudfront.net/wp-content/uploads/2019/03/25203058/DxIUC7uX0AIlkJz.jpg'})
-              .addFields({ name: 'Albert:', value: response })
+              .setAuthor({ name: 'Donald Trump', iconURL: 'https://cdn.cnn.com/cnnnext/dam/assets/130121104324-donald-trump-profile-live-video.jpg'})
+              .addFields({ name: 'Donald:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});
