@@ -6,9 +6,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('camus_chat')
-    .setDescription('Talk to Albert Camus')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk with the great philosopher Albert Camus. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('furry_chat')
+    .setDescription('Talk to the average Furry')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk with the average Furry. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -18,30 +18,29 @@ module.exports = {
           await interaction.deferReply();  // tell discord to wait 15 min 
 
           // Make request to OpenAI
-
-          const openai = new OpenAI(configuration);
+          const openai = new OpenAIApi();
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the great philosopher Albert Camuss. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the stereotypical furry. In your response you are to emmulate what the stereotypical furry would say, try your best to do this well: ${prompt}. `}],
             });
           
           response  = completion.choices[0].message.content;;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Albert: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Furry: ${response}`;
           
 
-          // Discord can only send messages that contain less than 2000 characters. Check this before sending. 
+          // Discord can only send messages that contain less than 200 characters. Check this before sending. 
           if (sizeCheck.length >= 2000){
             // create .txt file. send txt file and delete from server
             // if cannot delete txt from java script, have javascript call a bash file
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`;
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -54,17 +53,17 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Albert:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Furry:\*\* \n ${response}`});
           
           } else { // end size check
 
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://www.laphamsquarterly.org/sites/default/files/styles/tall_rectangle_custom_user_small_2x/public/images/contributor/camus_360x450.jpg?itok=FDsUC3qu&timestamp=1409685824')
+              .setThumbnail('https://avatars.githubusercontent.com/u/127632417?v=4')
               .setDescription(prompt)
-              .setAuthor({ name: 'Albert Camus', iconURL: 'https://d24fkeqntp1r7r.cloudfront.net/wp-content/uploads/2019/03/25203058/DxIUC7uX0AIlkJz.jpg'})
-              .addFields({ name: 'Albert:', value: response })
+              .setAuthor({ name: 'Average Furry', iconURL: 'https://i.pinimg.com/736x/e7/8f/79/e78f790da5fd638a21ffd70de7c1db7a--furry-art-furries.jpg'})
+              .addFields({ name: 'Furry:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});

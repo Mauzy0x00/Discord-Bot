@@ -6,9 +6,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('camus_chat')
-    .setDescription('Talk to Albert Camus')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk with the great philosopher Albert Camus. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('biden_chat')
+    .setDescription('Talk to Joe Biden')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk with President Joe Biden. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -24,14 +24,14 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the great philosopher Albert Camuss. To the best of your abilities, try to encapsulate this legend in your response: ${prompt}. `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the great president, sleepy Joe Biden. To the best of your abilities, try to encapsulate this legend in your response. It should be exaggerated slightly, cmon man:  ${prompt}. `}],
             });
           
           response  = completion.choices[0].message.content;;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Albert: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Joe: ${response}`;
           
 
           // Discord can only send messages that contain less than 2000 characters. Check this before sending. 
@@ -54,17 +54,17 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Albert:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Joe:\*\* \n ${response}`});
           
           } else { // end size check
 
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://www.laphamsquarterly.org/sites/default/files/styles/tall_rectangle_custom_user_small_2x/public/images/contributor/camus_360x450.jpg?itok=FDsUC3qu&timestamp=1409685824')
+              .setThumbnail('https://images.gulfnews.com/201903/190317%20Joe%20Biden_resources1.jpg')
               .setDescription(prompt)
-              .setAuthor({ name: 'Albert Camus', iconURL: 'https://d24fkeqntp1r7r.cloudfront.net/wp-content/uploads/2019/03/25203058/DxIUC7uX0AIlkJz.jpg'})
-              .addFields({ name: 'Albert:', value: response })
+              .setAuthor({ name: 'Joe Biden', iconURL: 'https://media.newyorker.com/photos/5cc24aa68168305a82502d84/master/w_2560%2Cc_limit/Osnos-JoeBiden.jpg'})
+              .addFields({ name: 'Joe:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});
