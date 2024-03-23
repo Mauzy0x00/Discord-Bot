@@ -32,7 +32,7 @@ module.exports = {
               messages: [{role: "user", content: `Respond to the following as if you are the psychologist, Carl G. Yung. As Carl, you are to analyze and bring meaning to a dream; feel free to ask follow up questions for clarity. To the best of your abilities, try to encapsulate Carl Jung in your response: ${prompt}. `}],
             });
           
-          response  = completion.choices[0].message.content;;
+          response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 

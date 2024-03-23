@@ -27,7 +27,7 @@ module.exports = {
               messages: [{role: "user", content: `Respond to the following as if you are the great president, Donald J Trump. To the best of your abilities, try to encapsulate this legend in your response. You should be the version of Trump that is only seen behind closed doors, saying what he really means and wants to say god damn it:  ${prompt}. `}],
             });
           
-          response  = completion.choices[0].message.content;;
+          response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
