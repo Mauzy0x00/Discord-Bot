@@ -27,7 +27,7 @@ module.exports = {
               messages: [{role: "user", content: `Respond to the following as if you are the great president, sleepy Joe Biden. To the best of your abilities, try to encapsulate this legend in your response. It should be exaggerated slightly, cmon man:  ${prompt}. `}],
             });
           
-          response  = completion.choices[0].message.content;;
+          response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 

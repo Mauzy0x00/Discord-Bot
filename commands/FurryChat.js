@@ -26,7 +26,7 @@ module.exports = {
               messages: [{role: "user", content: `Respond to the following as if you are the stereotypical furry. In your response you are to emmulate what the stereotypical furry would say, try your best to do this well: ${prompt}. `}],
             });
           
-          response  = completion.choices[0].message.content;;
+          response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
