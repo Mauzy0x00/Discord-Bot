@@ -19,7 +19,7 @@ module.exports = {
 
           // Make request to OpenAI
 
-          const openai = new OpenAI(configuration);
+          const openai = new OpenAI();
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({

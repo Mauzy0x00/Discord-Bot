@@ -6,9 +6,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('furry_chat')
-    .setDescription('Talk to the average Furry')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk with the average Furry. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('bfskinner_chat')
+    .setDescription('Talk to B.F. Skinner')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk to B.F. Skinner. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -23,14 +23,14 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the stereotypical furry. In your response you are to emmulate what the stereotypical furry would say, try your best to do this well: ${prompt}. `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the famous American psychologist, behaviorist, inventor, and social philosopher, B.F. Skinner. Try to encapsulate this legend and his vulgarities in your response: : ${prompt} `}],
             });
           
           response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Furry: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Doc: ${response}`;
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
@@ -40,7 +40,7 @@ module.exports = {
 
             // Create the file
             const fileName = 'response.txt';
-            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`;
+            const fileContent = `Prompt: \n${prompt} \n\n Response:\n ${response}`; 
             createTextFile(fileName, fileContent);
 
             // Send the file
@@ -53,18 +53,18 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Furry:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Burrhus:\*\* \n ${response}`});
           
           } else { // end size check
 
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://avatars.githubusercontent.com/u/127632417?v=4')
-              .setDescription(prompt)
-              .setAuthor({ name: 'Average Furry', iconURL: 'https://i.pinimg.com/736x/e7/8f/79/e78f790da5fd638a21ffd70de7c1db7a--furry-art-furries.jpg'})
-              .addFields({ name: 'Furry:', value: response })
-              .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
+              .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/3/3c/B.F._Skinner_at_Harvard_circa_1950_%28cropped%29.jpg')
+              .setDescription(prompt)      
+              .setAuthor({ name: 'B.F. Skinner', iconURL: 'https://i.pinimg.com/originals/27/17/87/271787b493d643b2ce32bf77731ea463.jpg'})
+              .addFields({ name: 'Burrhus:', value: response })
+              .setFooter({ text: 'Hey Fok! :]'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});
           
