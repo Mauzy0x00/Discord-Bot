@@ -23,7 +23,7 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the famous American psychologist, behaviorist, inventor, and social philosopher, B.F. Skinner. Try to encapsulate this legend and his vulgarities in your response: : ${prompt} `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the famous American psychologist, behaviorist, inventor, and social philosopher, B.F. Skinner. Try to encapsulate this legend in your response: : ${prompt} `}],
             });
           
           response  = completion.choices[0].message.content;
