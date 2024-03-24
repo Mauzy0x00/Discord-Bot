@@ -61,7 +61,7 @@ module.exports = {
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://www.washingtonpost.com/wp-apps/imrs.php?src=https://arc-anglerfish-washpost-prod-washpost.s3.amazonaws.com/public/6XQSLOC3JEI6VGZV3322AJ6UOA.jpg&w=1440')
+              .setThumbnail('https://img.washingtonpost.com/rw/2010-2019/WashingtonPost/2016/03/23/Food/Images/GettyImages-1091494581458771430.jpg?uuid=_lmPUPFEEeWio9TpaXkX0Q')
               .setDescription(prompt)
               .setAuthor({ name: 'Donald Trump', iconURL: 'https://cdn.cnn.com/cnnnext/dam/assets/130121104324-donald-trump-profile-live-video.jpg'})
               .addFields({ name: 'Donald:', value: response })
