@@ -18,7 +18,7 @@ module.exports = {
           await interaction.deferReply();  // tell discord to wait 15 min 
 
           // Make request to OpenAI
-          const openai = new OpenAIApi();
+          const openai = new OpenAI();
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
