@@ -6,9 +6,9 @@ const path = require('path');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('bfskinner_chat')
-    .setDescription('Talk to B.F. Skinner')
-    .addStringOption(option => option.setName('prompt').setDescription('Talk to B.F. Skinner. This costs me monies, please be nice :)').setRequired(true)),
+    .setName('steve')
+    .setDescription('Talk to Steve Irwin')
+    .addStringOption(option => option.setName('prompt').setDescription('Talk to Steve Irwin. This costs me monies, please be nice :)').setRequired(true)),
 
     async execute(interaction) {
         const prompt = interaction.options.getString('prompt');
@@ -23,14 +23,14 @@ module.exports = {
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({
               model: "gpt-3.5-turbo",
-              messages: [{role: "user", content: `Respond to the following as if you are the famous American psychologist, behaviorist, inventor, and social philosopher, B.F. Skinner. Try to encapsulate this legend in your response: : ${prompt} `}],
+              messages: [{role: "user", content: `Respond to the following as if you are the great Steve Irwin. Try to encapsulate this legend and his understanding of nature to the best of your abilites in your response: : ${prompt} `}],
             });
           
           response  = completion.choices[0].message.content;
           response = response.replace(/\n\n/, " ");    // message content from ChatGPT returns with two new lines, replace that with "ChatGPT: "
           console.log(response);
 
-          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Doc: ${response}`;
+          const sizeCheck = `${interaction.user.username}: ${prompt} \n\n Steve: ${response}`;
           
 
           // Discord can only send messages that contain less than 200 characters. Check this before sending. 
@@ -53,17 +53,17 @@ module.exports = {
           // Embeded fields can only contain 1024 characters
           else if(sizeCheck.length >= 1024) {
             
-            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Burrhus:\*\* \n ${response}`});
+            await interaction.editReply({ content: `\*\*${interaction.user.username}:\*\* \n ${prompt} \n\n \*\*Steve:\*\* \n ${response}`});
           
           } else { // end size check
 
             const GPTresponseEmbed = new EmbedBuilder()
               .setColor(0x00C995)
               .setTitle(`${interaction.user.username}:`)
-              .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/3/3c/B.F._Skinner_at_Harvard_circa_1950_%28cropped%29.jpg')
+              .setThumbnail('https://www.expressandstar.com/resizer/0l9tivMU8yQ3XgSwzCXUwL2A1AE=/1200x0/cloudfront-us-east-1.images.arcpublishing.com/mna/6CIWWNTFD5HIJJ5KFSH26VSQKA.jpg')
               .setDescription(prompt)      
-              .setAuthor({ name: 'B.F. Skinner', iconURL: 'https://i.pinimg.com/originals/27/17/87/271787b493d643b2ce32bf77731ea463.jpg'})
-              .addFields({ name: 'Burrhus:', value: response })
+              .setAuthor({ name: 'Steve Irwin', iconURL: 'https://vignette.wikia.nocookie.net/totalwar-ar/images/2/2e/Steve_Irwin.jpg/revision/latest/scale-to-width-down/2000?cb=20180630043303'})
+              .addFields({ name: 'Steve:', value: response })
               .setFooter({ text: 'Response by ChatGPT 3.5 Turbo'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});

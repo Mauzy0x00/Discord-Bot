@@ -13,7 +13,7 @@ module.exports = {
         const limit = 25;
         const mediaFilter = 'minimal';
 
-        const { data } = await axios.get(`https://api.tenor.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
+        const { data } = await axios.get(`https://tenor.googleapis.com/v2/search?q=${query}&key=${tenorAPI}&limit=${limit}&media_filter=${mediaFilter}`);
 
         // Choose a random gif 
         randomIndex = Math.floor(Math.random() * data.results.length);
