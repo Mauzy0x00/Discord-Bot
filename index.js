@@ -18,7 +18,9 @@ client.commands = new Collection();
 const commandsDirectories = [
 	{ path: path.join(__dirname, 'commands'), name: '' },						// ./commands
 	{ path: path.join(__dirname, 'commands', 'actions'), name: 'actions' },     // ./commands/actions
+	{ path: path.join(__dirname, 'commands', 'admin'), name: 'admin' },	    // ./commands/admin
 	{ path: path.join(__dirname, 'commands', 'emotes'), name: 'emotes' },	    // ./commands/emotes
+	
   ];
 
 // Loop through each directory and read its contents. Do this for every direcory specified above. 

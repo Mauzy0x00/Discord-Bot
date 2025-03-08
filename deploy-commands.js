@@ -22,6 +22,16 @@ for (const file of actionFiles) {
 	commands.push(command.data.toJSON());
 }
 
+
+// Admin
+const adminFiles = fs.readdirSync('./commands/admin').filter(file => file.endsWith('.js'));
+
+for (const file of adminFiles) {
+	const command = require(`./commands/admin/${file}`);
+	commands.push(command.data.toJSON());
+}
+
+
 // Emotes
 const emoteFiles = fs.readdirSync('./commands/emotes').filter(file => file.endsWith('.js'));
 

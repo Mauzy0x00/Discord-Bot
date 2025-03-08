@@ -21,7 +21,7 @@ module.exports = {
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({  // API Change
-              model: "gpt-3.5-turbo",
+              model: "o1-mini",
               messages: [{role: "user", content: `\`${prompt}\``}],
             });
           
