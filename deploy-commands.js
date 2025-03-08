@@ -32,6 +32,15 @@ for (const file of adminFiles) {
 }
 
 
+// AI
+const AIFiles = fs.readdirSync('./commands/AI').filter(file => file.endsWith('.js'));
+
+for (const file of AIFiles) {
+	const command = require(`./commands/AI/${file}`);
+	commands.push(command.data.toJSON());
+}
+
+
 // Emotes
 const emoteFiles = fs.readdirSync('./commands/emotes').filter(file => file.endsWith('.js'));
 
