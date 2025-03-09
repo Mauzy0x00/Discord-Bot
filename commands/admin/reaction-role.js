@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits } = require('discord.js');
+const db = require('../database.js'); // Import the database handler
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,40 +13,40 @@ module.exports = {
 			option.setName('emoji')
 				.setDescription('The emoji for the reaction role')
 				.setRequired(true))
-		.addRoleOption(option =>
-			option.setName('role')
-				.setDescription('The role to assign when users react')
+		.addStringOption(option =>
+			option.setName('role_name')
+				.setDescription('The name of the role to assign when users react')
 				.setRequired(true))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
-		
+
 	async execute(interaction) {
 		const messageId = interaction.options.getString('message_id');
 		const emoji = interaction.options.getString('emoji');
-		const role = interaction.options.getRole('role');
-		const channel = interaction.channel;
+		const roleName = interaction.options.getString('role_name');
+		const { guild, channel } = interaction;
 
 		try {
+			// Fetch the message
 			const message = await channel.messages.fetch(messageId);
 			await message.react(emoji);
 
-			interaction.client.on('messageReactionAdd', async (reaction, user) => {
-				if (reaction.message.id === messageId && reaction.emoji.name === emoji) {
-					const member = await reaction.message.guild.members.fetch(user.id);
-					await member.roles.add(role);
-				}
-			});
+			// Check if role exists, otherwise create it
+			let role = guild.roles.cache.find(r => r.name === roleName);
+			if (!role) {
+				role = await guild.roles.create({
+					name: roleName,
+					color: '#99aab5',
+					reason: `Reaction role created by ${interaction.user.tag}`,
+				});
+			}
 
-			interaction.client.on('messageReactionRemove', async (reaction, user) => {
-				if (reaction.message.id === messageId && reaction.emoji.name === emoji) {
-					const member = await reaction.message.guild.members.fetch(user.id);
-					await member.roles.remove(role);
-				}
-			});
+			// Store reaction role with guild ID in the database
+			db.addReactionRole(messageId, guild.id, emoji, role.id);
 
-			await interaction.reply({ content: `Reaction role set! React to the message with ${emoji} to get the role.`, flags: MessageFlags.Ephemeral });
+			await interaction.reply({ content: `✅ Reaction role set in **${guild.name}**! React with ${emoji} to get **${role.name}**.`, flags: MessageFlags.Ephemeral });
 		} catch (error) {
-			console.error(error);
-			await interaction.reply({ content: 'Failed to add reaction role. Make sure the message ID is correct and the bot has permissions.', flags: MessageFlags.Ephemeral });
+			console.error('Error setting reaction role:', error);
+			await interaction.reply({ content: '❌ Failed to set reaction role. Check permissions and message ID.', flags: MessageFlags.Ephemeral });
 		}
 	},
 };
