@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits } = require('discord.js');
-const db = require('../database.js'); // Import the database handler
+const db = require('../../database.js'); // Import the database handler
 
 module.exports = {
 	data: new SlashCommandBuilder()

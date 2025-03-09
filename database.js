@@ -1,6 +1,19 @@
+const fs = require('fs');
+const path = require('path');
 const Database = require('better-sqlite3');
 
-const db = new Database('./reaction_roles.db');
+
+// Define the database path
+const dbPath = path.join(__dirname, '../../data/reaction_roles.db'); 
+
+// Ensure the directory exists
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true }); // Create the directory if it doesn't exist
+}
+
+// Open the database
+const db = new Database(dbPath);
 
 // Create table with guild_id
 db.prepare(`

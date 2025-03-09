@@ -7,9 +7,19 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
+const db = require('./database.js'); // Import the database handler
+
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ 
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers, 
+	], 
+});
 
 // Commands Class
 client.commands = new Collection();
@@ -19,7 +29,7 @@ const commandsDirectories = [
 	{ path: path.join(__dirname, 'commands'), name: '' },						// ./commands
 	{ path: path.join(__dirname, 'commands', 'actions'), name: 'actions' },     // ./commands/actions
 	{ path: path.join(__dirname, 'commands', 'admin'), name: 'admin' },	    	// ./commands/admin
-	{ path: path.join(__dirname, 'commands', 'AI'), name: 'AI' },	    	// ./commands/AI
+	{ path: path.join(__dirname, 'commands', 'AI'), name: 'AI' },	    		// ./commands/AI
 	{ path: path.join(__dirname, 'commands', 'emotes'), name: 'emotes' },	    // ./commands/emotes
 	
   ];
@@ -62,6 +72,66 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+
+// Store reaction role data in memory (may become problematic if the db gets too big)
+client.reactionRoles = new Collection(); 
+
+// Handle reactions
+client.on('messageReactionAdd', async (reaction, user) => {
+    if (user.bot) return; // Ignore bot reactions
+
+    // Ensure message is in a guild (not a DM)
+    if (!reaction.message.guild) return;
+
+    const guildId = reaction.message.guild.id;
+    const messageId = reaction.message.id;
+    const emoji = reaction.emoji.name;
+
+    const reactionRole = db.getReactionRole(messageId, guildId);
+    if (!reactionRole) return; // No reaction role found for this message
+
+    // Check if the reacted emoji matches the stored one
+    if (emoji !== reactionRole.emoji) return;
+
+    const role = reaction.message.guild.roles.cache.get(reactionRole.role_id);
+    const member = await reaction.message.guild.members.fetch(user.id).catch(() => null);
+
+    if (role && member) {
+        try {
+            await member.roles.add(role);
+            console.log(`✅ Added role ${role.name} to ${user.tag}`);
+        } catch (error) {
+            console.error(`❌ Failed to add role: ${error.message}`);
+        }
+    }
+});
+
+client.on('messageReactionRemove', async (reaction, user) => {
+    if (user.bot) return; // Ignore bot reactions
+
+    const messageId = reaction.message.id;
+    const guildId = reaction.message.guild.id;
+    const emoji = reaction.emoji.name; // Make sure this matches what was stored
+
+    const reactionRole = db.getReactionRole(messageId, guildId);
+    if (!reactionRole) return;
+
+	// Check if the removed reaction matches the stored emoji
+	if (emoji !== reactionRole.emoji) return;
+
+    const role = reaction.message.guild.roles.cache.get(reactionRole.role_id);
+    const member = reaction.message.guild.members.cache.get(user.id);
+
+    if (role && member) {
+        try {
+            await member.roles.remove(role);
+            console.log(`✅ Removed role ${role.name} from ${user.tag}`);
+        } catch (error) {
+            console.error(`❌ Failed to remove role: ${error.message}`);
+        }
+    }
+});
 
 // Log in to Discord with your client's token
 client.login(token);
