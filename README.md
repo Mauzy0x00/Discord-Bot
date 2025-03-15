@@ -43,16 +43,62 @@ To use this bot, you will need to do the following:
 
 Currently, the bot supports the following commands:
 
+**Admin Commands**
+
+- `/message-logs`: Displays message logs.
+- `/reaction-role`: Manages reaction roles.
+- `/role-create`: Creates a role.
+- `/send-message`: Sends a message .
 - `/avatar`: Fetches a user's avatar.
-- `/chat`: ChatGPT integration using gpt-3.5-turbo. 
-- `/hug`: Specify a user and the bot will send a hug gif @ that user.
-- `/kiss`: Specify a user and the bot will send a kiss gif @ that user.
-- `/slap`: Specify a user and the bot will send a slap gif @ that user.
-- `/kick`: Doesn't kick anyone.
 - `/bing`: Replies with "Bong!".
 - `/prune`: Prune specified number of messages in the active channel.
 - `/server`: Fetch server information.
 - `/user`: Fetch user information.
+- `/poll`: Creates a poll.
+
+**Emotes**
+
+- `/blush`: Sends a blush emote.
+
+**ChatGPT API Bots**
+
+- `/AlbertCamus`: Engages in a conversation with Albert Camus.
+- `/BFSkinner`: Engages in a conversation with BF Skinner.
+- `/ChatGPT`: Engages in a conversation with ChatGPT.
+- `/DocChat`: Engages in a conversation with a doctor.
+- `/DonaldTrump`: Engages in a conversation with Donald Trump.
+- `/DreamChat`: Engages in a conversation with a dream interpreter.
+- `/FurryChat`: Engages in a conversation with a furry.
+- `/CarlinChat`: Engages in a conversation with George Carlin.
+- `/BidenChat`: Engages in a conversation with Joe Biden.
+- `/JoeChat`: Engages in a conversation with Joe Rogan.
+- `/MarcusAurelius`: Engages in a conversation with Marcus Aurelius.
+- `/OrcChat`: Engages in a conversation with an orc.
+- `/RustChat`: Engages in a conversation with a Rust developer.
+- `/SteveIrwin`: Engages in a conversation with Steve Irwin.
+
+**Social Gif Emotes**
+
+- `/bite`: Bites someone.
+- `/bully`: Bullies someone.
+- `/cuddle`: Cuddles with someone.
+- `/greet`: Greets someone.
+- `/handholding`: Holds hands with someone.
+- `/highfive`: Gives a high-five.
+- `/hold`: Holds someone.
+- `/hug`: Hugs someone.
+- `/kill`: Kills someone.
+- `/kiss`: Kisses someone.
+- `/lick`: Licks someone.
+- `/nom`: Noms on someone.
+- `/pat`: Pats someone.
+- `/poke`: Pokes someone.
+- `/punch`: Punches someone (likely a joke).
+- `/slap`: Slaps someone (likely a joke).
+- `/snuggle`: Snuggles with someone.
+- `/stare`: Stares at someone.
+- `/tickle`: Ticks someone.
+- `/wave`: Waves at someone.
 
 
 ## Contributing
