@@ -5,7 +5,7 @@
 // Collection class extends JavaScript's native Map class and includes more extensive, useful functionality. Collection is used to store and efficiently retrieve commands for execution.
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config.json');
 const db = require('./database.js'); // Import the database handler
 
@@ -19,6 +19,11 @@ const client = new Client({
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers, 
 	], 
+	partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction
+    ]
 });
 
 // Commands Class
@@ -73,34 +78,39 @@ for (const file of eventFiles) {
 	}
 }
 
-
-// Store reaction role data in memory (may become problematic if the db gets too big)
-client.reactionRoles = new Collection(); 
-
-// Handle reactions
+// Handle reaction events
 client.on('messageReactionAdd', async (reaction, user) => {
-    if (user.bot) return; // Ignore bot reactions
+    if (user.bot) return;
+    if (!reaction.message.guild) return; // Only proceed if in a guild
 
-    // Ensure message is in a guild (not a DM)
-    if (!reaction.message.guild) return;
+    // Handle partial reactions (reactions that were cached)
+    if (reaction.partial) {
+        try {
+            await reaction.fetch();
+        } catch (error) {
+            console.error('Error fetching reaction:', error);
+            return;
+        }
+    }
 
     const guildId = reaction.message.guild.id;
     const messageId = reaction.message.id;
     const emoji = reaction.emoji.name;
 
-    const reactionRole = db.getReactionRole(messageId, guildId);
-    if (!reactionRole) return; // No reaction role found for this message
+    // Retrieve the configured reaction-role mapping from the database
+    const reactionRole = db.getReactionRoleConfig(messageId, guildId, emoji);
+    if (!reactionRole) return; // If no configuration exists, do nothing
 
-    // Check if the reacted emoji matches the stored one
-    if (emoji !== reactionRole.emoji) return;
-
-    const role = reaction.message.guild.roles.cache.get(reactionRole.role_id);
+    // Fetch the role and member objects
+    const role = await reaction.message.guild.roles.fetch(reactionRole.role_id);
     const member = await reaction.message.guild.members.fetch(user.id).catch(() => null);
 
     if (role && member) {
         try {
             await member.roles.add(role);
-            console.log(`✅ Added role ${role.name} to ${user.tag}`);
+            // Record that the user has selected the reaction role
+            db.addUserReactionRole(messageId, guildId, user.id, emoji, role.id);
+            console.log(`✅ Added role ${role.name} to ${user.tag} in guild ${reaction.message.guild.name}`);
         } catch (error) {
             console.error(`❌ Failed to add role: ${error.message}`);
         }
@@ -108,28 +118,66 @@ client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
-    if (user.bot) return; // Ignore bot reactions
+    // Log all reaction removals for debugging
+    console.log(`Reaction removed: ${reaction.emoji.name} by ${user.tag} on message ${reaction.message.id}`);
+    
+    if (user.bot) {
+        console.log('Ignoring bot reaction removal');
+        return;
+    }
+    if (!reaction.message.guild) {
+        console.log('Ignoring non-guild reaction removal');
+        return;
+    }
 
-    const messageId = reaction.message.id;
-    const guildId = reaction.message.guild.id;
-    const emoji = reaction.emoji.name; // Make sure this matches what was stored
-
-    const reactionRole = db.getReactionRole(messageId, guildId);
-    if (!reactionRole) return;
-
-	// Check if the removed reaction matches the stored emoji
-	if (emoji !== reactionRole.emoji) return;
-
-    const role = reaction.message.guild.roles.cache.get(reactionRole.role_id);
-    const member = reaction.message.guild.members.cache.get(user.id);
-
-    if (role && member) {
+    // Handle partial reactions (reactions that were cached)
+    if (reaction.partial) {
         try {
-            await member.roles.remove(role);
-            console.log(`✅ Removed role ${role.name} from ${user.tag}`);
+            console.log('Fetching partial reaction');
+            await reaction.fetch();
         } catch (error) {
-            console.error(`❌ Failed to remove role: ${error.message}`);
+            console.error('Error fetching reaction:', error);
+            return;
         }
+    }
+
+    const guildId = reaction.message.guild.id;
+    const messageId = reaction.message.id;
+    const emoji = reaction.emoji.name;
+
+    console.log(`Looking up reaction role config for message ${messageId}, guild ${guildId}, emoji ${emoji}`);
+
+    // Retrieve the configured reaction-role mapping from the database
+    const reactionRole = db.getReactionRoleConfig(messageId, guildId, emoji);
+    if (!reactionRole) {
+        console.log('No reaction role configuration found');
+        return;
+    }
+
+    console.log(`Found configuration: Role ID ${reactionRole.role_id}`);
+
+    // Fetch the role and member objects
+    const role = await reaction.message.guild.roles.fetch(reactionRole.role_id);
+    const member = await reaction.message.guild.members.fetch(user.id).catch(() => null);
+
+    if (!role) {
+        console.log(`Role ${reactionRole.role_id} not found`);
+        return;
+    }
+    if (!member) {
+        console.log(`Member ${user.id} not found`);
+        return;
+    }
+
+    try {
+        await member.roles.remove(role);
+        console.log(`Removed role ${role.name} from ${user.tag}`);
+        
+        // Now remove the record from the database
+        db.removeUserReactionRole(messageId, guildId, user.id, emoji);
+        console.log(`Removed database record for user ${user.id}`);
+    } catch (error) {
+        console.error(`Failed to remove role: ${error.message}`);
     }
 });
 

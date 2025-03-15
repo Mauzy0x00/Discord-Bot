@@ -12,12 +12,11 @@ module.exports = {
 	execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 
-		const reactionRoles = db.getAllReactionRoles();
-		reactionRoles.forEach(({ message_id, guild_id, emoji, role_id }) => {
-			const key = `${guild_id}-${message_id}`; // Unique identifier per server
-			client.reactionRoles.set(key, { emoji, roleId: role_id });
-		});
-		
-		console.log(`Loaded ${reactionRoles.length} reaction roles from DB.`);
+        try {
+            const configs = db.getAllReactionRoleConfigs();
+            console.log(`✅ Found ${configs.length} reaction role configurations in the database.`);
+        } catch (error) {
+            console.error('❌ Failed to check reaction roles:', error);
+        }
 	},
 };
