@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits } = require('discord.js');
-const db = require('../../database.js'); // Import the database handler
+const db = require('../../database.js'); 
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -35,13 +35,13 @@ module.exports = {
 
             await interaction.reply({
                 content: `✅ Reaction role set in **${guild.name}**! React with ${emoji} to get **${role.name}** role.`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error('Error setting reaction role:', error);
             await interaction.reply({
                 content: '❌ Failed to set reaction role. Check if the message ID is valid and if I have permission to add reactions.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     },

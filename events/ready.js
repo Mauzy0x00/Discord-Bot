@@ -18,5 +18,12 @@ module.exports = {
         } catch (error) {
             console.error('❌ Failed to check reaction roles:', error);
         }
+
+		try {
+            const configs = db.getAllMessageLogSettings();
+            console.log(`✅ Found ${configs.length} message log settings in the database.`);
+        } catch (error) {
+            console.error('❌ Failed to check message log settings:', error);
+        }
 	},
 };

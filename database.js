@@ -3,7 +3,7 @@ const path = require('path');
 const Database = require('better-sqlite3');
 
 // Define the database path
-const dbPath = path.join(__dirname, './data/reaction_roles.db'); 
+const dbPath = path.join(__dirname, './data/guild_configs.db'); 
 
 // Ensure the directory exists
 const dbDir = path.dirname(dbPath);
@@ -14,7 +14,7 @@ if (!fs.existsSync(dbDir)) {
 // Open the database
 const db = new Database(dbPath);
 
-// Create table to hold messages that the bot has reacted to in the past
+// Bot Reaction Roles Table
 db.prepare(`
 CREATE TABLE IF NOT EXISTS reaction_role_configs (
     message_id TEXT,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS reaction_role_configs (
 )
 `).run();
 
-// Create table to hold user reactions
+// User Reaction Roles Table
 db.prepare(`
 CREATE TABLE IF NOT EXISTS user_reaction_roles (
     message_id TEXT,
@@ -37,71 +37,117 @@ CREATE TABLE IF NOT EXISTS user_reaction_roles (
 )
 `).run();
 
+//  Join Notification Table
+db.prepare(`
+CREATE TABLE IF NOT EXISTS join_notifications (
+    guild_id TEXT PRIMARY KEY,
+    channel_id TEXT NOT NULL,
+    message TEXT NOT NULL DEFAULT 'Welcome {user} to the server!'
+)
+`).run();
+
+// Message Logs Table
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS message_logs (
+        guild_id TEXT PRIMARY KEY,
+        channel_id TEXT NOT NULL
+    )
+    `).run();
+
 module.exports = {
-    // Add reaction role configuration
+    // Reaction roles
     addReactionRoleConfig: (messageId, guildId, emoji, roleId) => {
         db.prepare('INSERT OR REPLACE INTO reaction_role_configs (message_id, guild_id, emoji, role_id) VALUES (?, ?, ?, ?)')
             .run(messageId, guildId, emoji, roleId);
     },
 
-    // Get reaction role configuration by message ID, guild ID and emoji
     getReactionRoleConfig: (messageId, guildId, emoji) => {
         return db.prepare('SELECT * FROM reaction_role_configs WHERE message_id = ? AND guild_id = ? AND emoji = ?')
             .get(messageId, guildId, emoji);
     },
 
-    // Get all reaction role configurations for a message
     getAllReactionRoleConfigsForMessage: (messageId, guildId) => {
         return db.prepare('SELECT * FROM reaction_role_configs WHERE message_id = ? AND guild_id = ?')
             .all(messageId, guildId);
     },
 
-    // Remove reaction role configuration
     removeReactionRoleConfig: (messageId, guildId, emoji) => {
         db.prepare('DELETE FROM reaction_role_configs WHERE message_id = ? AND guild_id = ? AND emoji = ?')
             .run(messageId, guildId, emoji);
     },
 
-    // Get all reaction role configurations for all servers
     getAllReactionRoleConfigs: () => {
         return db.prepare('SELECT * FROM reaction_role_configs').all();
     },
 
-    // Get all reaction role configurations for a specific server
     getReactionRoleConfigsByGuild: (guildId) => {
         return db.prepare('SELECT * FROM reaction_role_configs WHERE guild_id = ?').all(guildId);
     },
 
-    // Add user reaction role
     addUserReactionRole: (messageId, guildId, userId, emoji, roleId) => {
         db.prepare('INSERT OR REPLACE INTO user_reaction_roles (message_id, guild_id, user_id, emoji, role_id) VALUES (?, ?, ?, ?, ?)')
             .run(messageId, guildId, userId, emoji, roleId);
     },
 
-    // Get user reaction role
     getUserReactionRole: (messageId, guildId, userId, emoji) => {
         return db.prepare('SELECT * FROM user_reaction_roles WHERE message_id = ? AND guild_id = ? AND user_id = ? AND emoji = ?')
             .get(messageId, guildId, userId, emoji);
     },
 
-    // Remove user reaction role
     removeUserReactionRole: (messageId, guildId, userId, emoji) => {
         db.prepare('DELETE FROM user_reaction_roles WHERE message_id = ? AND guild_id = ? AND user_id = ? AND emoji = ?')
             .run(messageId, guildId, userId, emoji);
     },
 
-    // Get all user reaction roles
     getAllUserReactionRoles: () => {
         return db.prepare('SELECT * FROM user_reaction_roles').all();
     },
 
-    // Get all user reaction roles for a specific user
     getUserReactionRoles: (userId) => {
         return db.prepare('SELECT * FROM user_reaction_roles WHERE user_id = ?').all(userId);
     },
 
-    // Get all user reaction roles for a specific guild
     getUserReactionRolesByGuild: (guildId) => {
         return db.prepare('SELECT * FROM user_reaction_roles WHERE guild_id = ?').all(guildId);
+    },
+
+    // Join notifications
+    setJoinNotificationChannel: (guildId, channelId, message = 'Welcome {user} to the server!') => {
+        db.prepare('INSERT OR REPLACE INTO join_notifications (guild_id, channel_id, message) VALUES (?, ?, ?)')
+            .run(guildId, channelId, message);
+    },
+
+    getJoinNotificationSettings: (guildId) => {
+        return db.prepare('SELECT * FROM join_notifications WHERE guild_id = ?')
+            .get(guildId);
+    },
+
+    removeJoinNotificationSettings: (guildId) => {
+        db.prepare('DELETE FROM join_notifications WHERE guild_id = ?')
+            .run(guildId);
+    },
+
+    getAllJoinNotificationSettings: () => {
+        return db.prepare('SELECT * FROM join_notifications').all();
+    },
+
+    // Message logging
+    setMessageLogChannel: (guildId, channelId) => {
+        db.prepare('INSERT OR REPLACE INTO message_logs (guild_id, channel_id) VALUES (?, ?)')
+            .run(guildId, channelId);
+    },
+
+    getMessageLogChannel: (guildId) => {
+        return db.prepare('SELECT channel_id FROM message_logs WHERE guild_id = ?')
+            .get(guildId);
+    },
+
+    removeMessageLogChannel: (guildId) => {
+        db.prepare('DELETE FROM message_logs WHERE guild_id = ?')
+            .run(guildId);
+    },
+
+    getAllMessageLogSettings: () => {
+        return db.prepare('SELECT * FROM message_logs').all();
     }
 };
