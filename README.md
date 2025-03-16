@@ -45,7 +45,7 @@ Currently, the bot supports the following commands:
 
 **Admin Commands**
 
-- `/message-logs`: Displays message logs.
+- `/message-logs`: Show and configure information about deleted messages.
 - `/reaction-role`: Manages reaction roles.
 - `/role-create`: Creates a role.
 - `/send-message`: Sends a message .
@@ -55,6 +55,7 @@ Currently, the bot supports the following commands:
 - `/server`: Fetch server information.
 - `/user`: Fetch user information.
 - `/poll`: Creates a poll.
+- `/setjoinchannel`: Select a channel and message for join notifications.
 
 **Emotes**
 
