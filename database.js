@@ -1,3 +1,5 @@
+// Most of the information in this database is to ensure that data persists across bot restarts
+
 const fs = require('fs');
 const path = require('path');
 const Database = require('better-sqlite3');
@@ -52,7 +54,7 @@ db.prepare(`
         guild_id TEXT PRIMARY KEY,
         channel_id TEXT NOT NULL
     )
-    `).run();
+`).run();
 
 module.exports = {
     // Reaction roles
