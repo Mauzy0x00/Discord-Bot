@@ -132,13 +132,11 @@ verify_node_version() {
     return 0
 }
 
-check_curl() {
-    if ! command -v curl &> /dev/null; then
-        echo -e "${YELLOW}Curl is not installed. Installing using ${PKG_MANAGER}...${NC}"
-        return 1
-    fi
+install_curl() {
+    PKG_MANAGER=$1
+    echo -e "${YELLOW}Curl is not installed. Installing using ${PKG_MANAGER}...${NC}"
 
-        case $PKG_MANAGER in
+    case $PKG_MANAGER in
         apt)
             sudo apt install -y curl
             ;;
@@ -162,7 +160,6 @@ check_curl() {
             exit 1
             ;;
     esac
-    return 0
 }
 
 install_dependencies() {
@@ -234,15 +231,16 @@ main() {
     echo -e "${BLUE}Detected package manager: ${PKG_MANAGER}${NC}"
     
     # Check curl
-        if ! check_curl; then
+    if ! command -v curl &> /dev/null; then
         echo -e "${YELLOW}Need to install curl.${NC}"
-        install_node "$PKG_MANAGER"
+        install_curl "$PKG_MANAGER"
         
         # Verify again after installation
-        if ! check_curl; then
+        if ! command -v curl &> /dev/null; then
             echo -e "${RED}Failed to install curl. Please install manually.${NC}"
             exit 1
         fi
+    fi
 
     # Check Node.js version
     if ! verify_node_version; then
