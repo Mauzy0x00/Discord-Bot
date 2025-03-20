@@ -41,69 +41,39 @@ version_gt() {
 
 install_node() {
     PKG_MANAGER=$1
-    echo -e "${YELLOW}Installing Node.js using ${PKG_MANAGER}...${NC}"
-    
-    case $PKG_MANAGER in
-        apt)
-            # Use NodeSource for modern Node.js versions
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-            sudo apt install -y nodejs
-            ;;
-        dnf)
-            sudo dnf module install -y nodejs:20/default
-            ;;
-        yum)
-            curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-            sudo yum install -y nodejs
-            ;;
-        pacman)
-            sudo pacman -S --noconfirm nodejs npm
-            ;;
-        zypper)
-            sudo zypper install -y nodejs npm
-            ;;
-        apk)
-            sudo apk add nodejs npm
-            ;;
-        *)
-            echo -e "${YELLOW}Unknown package manager. Installing Node.js using NVM...${NC}"
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 20
-            nvm use 20
-            ;;
-    esac
-}
+    if [ "$PKG_MANAGER" != "apt" ] && [ "$PKG_MANAGER" != "yum" ]; then
+        echo -e "${YELLOW}Installing Node.js using ${PKG_MANAGER}...${NC}"
 
-install_git() {
-    PKG_MANAGER=$1
-    echo -e "${YELLOW}Installing Git using ${PKG_MANAGER}...${NC}"
-    
-    case $PKG_MANAGER in
-        apt)
-            sudo apt install -y git
-            ;;
-        dnf)
-            sudo dnf install -y git
-            ;;
-        yum)
-            sudo yum install -y git
-            ;;
-        pacman)
-            sudo pacman -S --noconfirm git
-            ;;
-        zypper)
-            sudo zypper install -y git
-            ;;
-        apk)
-            sudo apk add git
-            ;;
-        *)
-            echo -e "${RED}Unknown package manager. Please install Git manually.${NC}"
-            exit 1
-            ;;
-    esac
+        case $PKG_MANAGER in
+            dnf)
+                sudo dnf module install -y nodejs:20/default
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm nodejs npm
+                ;;
+            zypper)
+                sudo zypper install -y nodejs npm
+                ;;
+            apk)
+                sudo apk add nodejs npm
+                ;;
+            *)
+                echo -e "${YELLOW}Unknown package manager. Installing Node.js using NVM...${NC}"
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm install 22
+                nvm use 22
+                ;;
+        esac
+    else
+        echo -e "${YELLOW}Installing Node.js using NVM...${NC}"
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 22
+        nvm use 22
+    fi
 }
 
 install_tmux() {
@@ -162,20 +132,44 @@ verify_node_version() {
     return 0
 }
 
-clone_repository() {
-    echo -e "${YELLOW}Cloning repository...${NC}"
+install_curl() {
+    PKG_MANAGER=$1
+    echo -e "${YELLOW}Curl is not installed. Installing using ${PKG_MANAGER}...${NC}"
 
-    git clone https://github.com/Mauzy0x00/Discord-Bot
-    cd discord-bot || exit 1
+    case $PKG_MANAGER in
+        apt)
+            sudo apt install -y curl
+            ;;
+        dnf)
+            sudo dnf install -y curl
+            ;;
+        yum)
+            sudo yum install -y curl
+            ;;
+        pacman)
+            sudo pacman -S --noconfirm curl
+            ;;
+        zypper)
+            sudo zypper install -y curl
+            ;;
+        apk)
+            sudo apk add curl
+            ;;
+        *)
+            echo -e "${RED}Unknown package manager. Please install curl manually.${NC}"
+            exit 1
+            ;;
+    esac
 }
 
 install_dependencies() {
     echo -e "${YELLOW}Installing bot dependencies...${NC}"
-    npm install discord.js openai axios
+    npm install discord.js openai axios better-sqlite3
 }
 
 create_config_file() {
-    echo -e "${YELLOW}Creating configuration file...${NC}"
+    echo -e "${YELLOW}Creating configuration file (config.json)...${NC}"
+    echo -e "${YELLOW}The API tokens are sensitive security tokens! This script isn't stealing them but don't share your API keys!${NC}"
     echo -e "${BLUE}Please provide the following information:${NC}"
     
     read -p "Discord Bot ID: " CLIENT_ID
@@ -189,11 +183,11 @@ create_config_file() {
     "clientId": "$CLIENT_ID",
     "guildId": "$GUILD_ID",
     "token": "$TOKEN",
-    "tenorAPI": "$TENOR_API",
-    "OpenAIApiKey": "$OPENAI_API_KEY"
+    "tenorAPI": "$TENOR_API"
 }
 EOF
-    
+    export OPENAI_API_KEY="$OPENAI_API_KEY" # Why do they do it like this? I wonder.
+
     echo -e "${GREEN}config.json created successfully${NC}"
 }
 
@@ -237,12 +231,18 @@ main() {
     PKG_MANAGER=$(detect_package_manager)
     echo -e "${BLUE}Detected package manager: ${PKG_MANAGER}${NC}"
     
-    # Check if Git is installed
-    if ! command -v git &> /dev/null; then
-        echo -e "${RED}Git not found. Installing...${NC}"
-        install_git "$PKG_MANAGER"
+    # Check curl
+    if ! command -v curl &> /dev/null; then
+        echo -e "${YELLOW}Need to install curl.${NC}"
+        install_curl "$PKG_MANAGER"
+        
+        # Verify again after installation
+        if ! command -v curl &> /dev/null; then
+            echo -e "${RED}Failed to install curl. Please install manually.${NC}"
+            exit 1
+        fi
     fi
-    
+
     # Check Node.js version
     if ! verify_node_version; then
         echo -e "${YELLOW}Need to install/update Node.js${NC}"
@@ -253,18 +253,6 @@ main() {
             echo -e "${RED}Failed to install compatible Node.js version. Please install manually.${NC}"
             exit 1
         fi
-    fi
-    
-    # Ask for repository URL if not provided
-    if [ -z "$1" ]; then
-        read -p "Enter repository URL (or press Enter to clone in current directory): " REPO_URL
-        if [ -z "$REPO_URL" ]; then
-            echo -e "${YELLOW}Skipping repository clone. Assuming bot files are in the current directory.${NC}"
-        else
-            clone_repository "$REPO_URL"
-        fi
-    else
-        clone_repository "$1"
     fi
     
     # Install dependencies
