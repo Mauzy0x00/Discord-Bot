@@ -41,69 +41,39 @@ version_gt() {
 
 install_node() {
     PKG_MANAGER=$1
-    echo -e "${YELLOW}Installing Node.js using ${PKG_MANAGER}...${NC}"
-    
-    case $PKG_MANAGER in
-        apt)
-            # Use NodeSource for modern Node.js versions
-            curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-            sudo apt install -y nodejs
-            ;;
-        dnf)
-            sudo dnf module install -y nodejs:20/default
-            ;;
-        yum)
-            curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
-            sudo yum install -y nodejs
-            ;;
-        pacman)
-            sudo pacman -S --noconfirm nodejs npm
-            ;;
-        zypper)
-            sudo zypper install -y nodejs npm
-            ;;
-        apk)
-            sudo apk add nodejs npm
-            ;;
-        *)
-            echo -e "${YELLOW}Unknown package manager. Installing Node.js using NVM...${NC}"
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install 20
-            nvm use 20
-            ;;
-    esac
-}
+    if [ "$PKG_MANAGER" != "apt" ] && [ "$PKG_MANAGER" != "yum" ]; then
+        echo -e "${YELLOW}Installing Node.js using ${PKG_MANAGER}...${NC}"
 
-install_git() {
-    PKG_MANAGER=$1
-    echo -e "${YELLOW}Installing Git using ${PKG_MANAGER}...${NC}"
-    
-    case $PKG_MANAGER in
-        apt)
-            sudo apt install -y git
-            ;;
-        dnf)
-            sudo dnf install -y git
-            ;;
-        yum)
-            sudo yum install -y git
-            ;;
-        pacman)
-            sudo pacman -S --noconfirm git
-            ;;
-        zypper)
-            sudo zypper install -y git
-            ;;
-        apk)
-            sudo apk add git
-            ;;
-        *)
-            echo -e "${RED}Unknown package manager. Please install Git manually.${NC}"
-            exit 1
-            ;;
-    esac
+        case $PKG_MANAGER in
+            dnf)
+                sudo dnf module install -y nodejs:20/default
+                ;;
+            pacman)
+                sudo pacman -S --noconfirm nodejs npm
+                ;;
+            zypper)
+                sudo zypper install -y nodejs npm
+                ;;
+            apk)
+                sudo apk add nodejs npm
+                ;;
+            *)
+                echo -e "${YELLOW}Unknown package manager. Installing Node.js using NVM...${NC}"
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+                export NVM_DIR="$HOME/.nvm"
+                [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                nvm install 22
+                nvm use 22
+                ;;
+        esac
+    else
+        echo -e "${YELLOW}Installing Node.js using NVM...${NC}"
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        nvm install 22
+        nvm use 22
+    fi
 }
 
 install_tmux() {
@@ -162,16 +132,9 @@ verify_node_version() {
     return 0
 }
 
-clone_repository() {
-    echo -e "${YELLOW}Cloning repository...${NC}"
-
-    git clone https://github.com/Mauzy0x00/Discord-Bot
-    cd discord-bot || exit 1
-}
-
 install_dependencies() {
     echo -e "${YELLOW}Installing bot dependencies...${NC}"
-    npm install discord.js openai axios
+    npm install discord.js openai axios better-sqlite3
 }
 
 create_config_file() {
@@ -236,12 +199,6 @@ start_bot() {
 main() {
     PKG_MANAGER=$(detect_package_manager)
     echo -e "${BLUE}Detected package manager: ${PKG_MANAGER}${NC}"
-    
-    # Check if Git is installed
-    if ! command -v git &> /dev/null; then
-        echo -e "${RED}Git not found. Installing...${NC}"
-        install_git "$PKG_MANAGER"
-    fi
     
     # Check Node.js version
     if ! verify_node_version; then
