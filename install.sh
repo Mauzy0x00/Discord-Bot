@@ -183,7 +183,7 @@ create_config_file() {
     "clientId": "$CLIENT_ID",
     "guildId": "$GUILD_ID",
     "token": "$TOKEN",
-    "tenorAPI": "$TENOR_API",
+    "tenorAPI": "$TENOR_API"
 }
 EOF
     export OPENAI_API_KEY="$OPENAI_API_KEY" # Why do they do it like this? I wonder.
