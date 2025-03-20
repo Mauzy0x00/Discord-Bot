@@ -7,7 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
 const { token } = require('./config.json');
-const db = require('./database.js'); // Import the database handler
+const db = require('./database.js');
 
 
 // Create a new client instance
@@ -18,6 +18,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers, 
+        GatewayIntentBits.GuildVoiceStates
 	], 
 	partials: [
         Partials.Message,

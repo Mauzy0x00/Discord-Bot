@@ -66,7 +66,7 @@ module.exports = {
             db.removeMessageLogChannel(guildId);
             
             await interaction.reply({
-                content: `✅ Successfully removed ${channelName} as the message log channel. Deleted messages will no longer be logged.`,
+                content: `✅ Successfully removed ${channelName} as the message log channel. Deleted messages and voice channel activity will no longer be logged.`,
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -92,7 +92,7 @@ module.exports = {
             }
             
             await interaction.reply({
-                content: `The current log channel for deleted messages is set to ${channel}.`,
+                content: `The current log channel for deleted messages and voice channel activity is set to ${channel}.`,
                 flags: MessageFlags.Ephemeral
             });
         }
