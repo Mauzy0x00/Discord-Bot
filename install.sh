@@ -132,6 +132,39 @@ verify_node_version() {
     return 0
 }
 
+check_curl() {
+    if ! command -v curl &> /dev/null; then
+        echo -e "${YELLOW}Curl is not installed. Installing using ${PKG_MANAGER}...${NC}"
+        return 1
+    fi
+
+        case $PKG_MANAGER in
+        apt)
+            sudo apt install -y curl
+            ;;
+        dnf)
+            sudo dnf install -y curl
+            ;;
+        yum)
+            sudo yum install -y curl
+            ;;
+        pacman)
+            sudo pacman -S --noconfirm curl
+            ;;
+        zypper)
+            sudo zypper install -y curl
+            ;;
+        apk)
+            sudo apk add curl
+            ;;
+        *)
+            echo -e "${RED}Unknown package manager. Please install curl manually.${NC}"
+            exit 1
+            ;;
+    esac
+    return 0
+}
+
 install_dependencies() {
     echo -e "${YELLOW}Installing bot dependencies...${NC}"
     npm install discord.js openai axios better-sqlite3
@@ -200,6 +233,17 @@ main() {
     PKG_MANAGER=$(detect_package_manager)
     echo -e "${BLUE}Detected package manager: ${PKG_MANAGER}${NC}"
     
+    # Check curl
+        if ! check_curl; then
+        echo -e "${YELLOW}Need to install curl.${NC}"
+        install_node "$PKG_MANAGER"
+        
+        # Verify again after installation
+        if ! check_curl; then
+            echo -e "${RED}Failed to install curl. Please install manually.${NC}"
+            exit 1
+        fi
+
     # Check Node.js version
     if ! verify_node_version; then
         echo -e "${YELLOW}Need to install/update Node.js${NC}"
