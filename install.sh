@@ -168,7 +168,8 @@ install_dependencies() {
 }
 
 create_config_file() {
-    echo -e "${YELLOW}Creating configuration file...${NC}"
+    echo -e "${YELLOW}Creating configuration file (config.json)...${NC}"
+    echo -e "${YELLOW}The API tokens are sensitive security tokens! This script isn't stealing them but don't share your API keys!${NC}"
     echo -e "${BLUE}Please provide the following information:${NC}"
     
     read -p "Discord Bot ID: " CLIENT_ID
@@ -183,10 +184,10 @@ create_config_file() {
     "guildId": "$GUILD_ID",
     "token": "$TOKEN",
     "tenorAPI": "$TENOR_API",
-    "OpenAIApiKey": "$OPENAI_API_KEY"
 }
 EOF
-    
+    export OPENAI_API_KEY="$OPENAI_API_KEY" # Why do they do it like this? I wonder.
+
     echo -e "${GREEN}config.json created successfully${NC}"
 }
 
@@ -252,18 +253,6 @@ main() {
             echo -e "${RED}Failed to install compatible Node.js version. Please install manually.${NC}"
             exit 1
         fi
-    fi
-    
-    # Ask for repository URL if not provided
-    if [ -z "$1" ]; then
-        read -p "Enter repository URL (or press Enter to clone in current directory): " REPO_URL
-        if [ -z "$REPO_URL" ]; then
-            echo -e "${YELLOW}Skipping repository clone. Assuming bot files are in the current directory.${NC}"
-        else
-            clone_repository "$REPO_URL"
-        fi
-    else
-        clone_repository "$1"
     fi
     
     # Install dependencies
