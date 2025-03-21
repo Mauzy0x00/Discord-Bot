@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle, MessageFlags, PermissionFlagsBits} = require('discord.js');
+const { SlashCommandBuilder, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle, MessageFlags, PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,7 +35,7 @@ module.exports = {
 			.setCustomId('messageInput')
 			.setLabel('Message Content')
 			.setStyle(TextInputStyle.Paragraph) // Paragraph style allows multi-line input
-			.setPlaceholder('Type your message here...')
+			.setPlaceholder('Type your message here... Use @Role to mention roles.')
 			.setRequired(true);
 
 		// Create an action row for the text input (you can have up to 5 components per modal)
@@ -54,20 +54,69 @@ module.exports = {
 			const modalSubmission = await interaction.awaitModalSubmit({ filter, time: 300000 }); // 5 minute timeout
 
 			// Get the text input from the modal submission
-			const messageContent = modalSubmission.fields.getTextInputValue('messageInput');
-
+			let messageContent = modalSubmission.fields.getTextInputValue('messageInput');
+			
 			// Format the final message. If a title was provided, prepend it.
 			let finalMessage = title ? `**${title}**\n\n` : '';
 			finalMessage += messageContent;
+			
+			// Convert @role mentions to proper Discord mention format
+			const processedMessage = await convertMentions(finalMessage, interaction.guild);
 
-			// Send the final message to the specified channel
-			await channel.send(finalMessage);
+			// Send the final message to the specified channel with allowed mentions
+			await channel.send({
+				content: processedMessage,
+				allowedMentions: { parse: ['roles', 'users', 'everyone'] }
+			});
 
 			// Acknowledge the modal submission
 			await modalSubmission.reply({ content: 'Message sent!', flags: MessageFlags.Ephemeral });
 		} catch (error) {
+			console.error('Error in send_message command:', error);
 			// If the user doesn't submit the modal in time, let them know.
-			await interaction.followUp({ content: 'You did not submit the modal in time.', flags: MessageFlags.Ephemeral });
+			if (error.name === 'Error' && error.message === 'Modal timed out') {
+				await interaction.followUp({ content: 'You did not submit the modal in time.', flags: MessageFlags.Ephemeral });
+			} else {
+				await interaction.followUp({ content: 'An error occurred while sending the message.', flags: MessageFlags.Ephemeral });
+			}
 		}
 	},
 };
+
+/**
+ * Converts text mentions (@RoleName) to proper Discord mention format (<@&ROLE_ID>)
+ * @param {string} text - The message text to process
+ * @param {Guild} guild - The guild object to look up roles
+ * @returns {string} - The processed message with proper mention formatting
+ */
+async function convertMentions(text, guild) {
+	// Get all roles in the guild
+	const roles = await guild.roles.fetch();
+	
+	// Replace @role mentions with the proper format
+	let processedText = text;
+	
+	// Use a regex to find potential role mentions (@RoleName)
+	const mentionRegex = /@(\w+)/g;
+	let match;
+	
+	while ((match = mentionRegex.exec(text)) !== null) {
+		const roleName = match[1];
+		
+		// Find the role by name (case-insensitive)
+		const role = roles.find(r => 
+			r.name.toLowerCase() === roleName.toLowerCase() ||
+			r.name.toLowerCase().startsWith(roleName.toLowerCase())
+		);
+		
+		if (role) {
+			// Replace the text mention with the proper Discord mention format
+			processedText = processedText.replace(
+				match[0], // The matched text (e.g., @Admin)
+				`<@&${role.id}>` // The proper Discord role mention format
+			);
+		}
+	}
+	
+	return processedText;
+}
