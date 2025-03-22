@@ -41,12 +41,5 @@ module.exports = {
             console.error('❌ Failed to check message log settings:', error);
         }
 
-        try {
-            const configs = db.getAll();
-            console.log(`✅ Found ${configs.length} auto role settings in the database.`);
-        } catch (error) {
-            console.error('❌ Failed to check message log settings:', error);
-        }
-
 	},
 };

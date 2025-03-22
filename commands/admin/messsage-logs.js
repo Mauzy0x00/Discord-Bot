@@ -8,10 +8,10 @@ module.exports = {
         .addSubcommand(subcommand =>
             subcommand
                 .setName('set')
-                .setDescription('Set a channel for deleted message logs')
+                .setDescription('Set a channel for logs')
                 .addChannelOption(option => 
                     option.setName('channel')
-                        .setDescription('The channel to log deleted messages')
+                        .setDescription('The channel to log messages')
                         .setRequired(true)))
         .addSubcommand(subcommand =>
             subcommand
@@ -42,7 +42,7 @@ module.exports = {
             db.setMessageLogChannel(guildId, channel.id);
             
             await interaction.reply({
-                content: `✅ Successfully set ${channel} as the log channel for deleted messages.`,
+                content: `✅ Successfully set ${channel} as the log channel for server logging.`,
                 flags: MessageFlags.Ephemeral
             });
         } 
@@ -66,7 +66,7 @@ module.exports = {
             db.removeMessageLogChannel(guildId);
             
             await interaction.reply({
-                content: `✅ Successfully removed ${channelName} as the message log channel. Deleted messages and voice channel activity will no longer be logged.`,
+                content: `✅ Successfully removed ${channelName} as the message log channel. Deleted messages, edited messages and voice channel activity will no longer be logged.`,
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -92,7 +92,7 @@ module.exports = {
             }
             
             await interaction.reply({
-                content: `The current log channel for deleted messages and voice channel activity is set to ${channel}.`,
+                content: `The current log channel for server activity logging is set to ${channel}.`,
                 flags: MessageFlags.Ephemeral
             });
         }
