@@ -15,10 +15,10 @@ const client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildMessageReactions,
-		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers, 
-        GatewayIntentBits.GuildVoiceStates
+		GatewayIntentBits.MessageContent
 	], 
 	partials: [
         Partials.Message,

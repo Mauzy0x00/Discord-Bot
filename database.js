@@ -56,6 +56,15 @@ db.prepare(`
     )
 `).run();
 
+// Autorole Configuration Table
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS autorole_configs (
+        guild_id TEXT PRIMARY KEY,
+        role_id TEXT NOT NULL,
+        enabled BOOLEAN NOT NULL DEFAULT 1
+    )
+`).run();
+
 module.exports = {
     // Reaction roles
     addReactionRoleConfig: (messageId, guildId, emoji, roleId) => {
@@ -151,5 +160,36 @@ module.exports = {
 
     getAllMessageLogSettings: () => {
         return db.prepare('SELECT * FROM message_logs').all();
+    },
+
+    
+    // Autorole functions
+    setAutorole: (guildId, roleId) => {
+        db.prepare('INSERT OR REPLACE INTO autorole_configs (guild_id, role_id, enabled) VALUES (?, ?, 1)')
+            .run(guildId, roleId);
+    },
+    
+    getAutorole: (guildId) => {
+        return db.prepare('SELECT * FROM autorole_configs WHERE guild_id = ?')
+            .get(guildId);
+    },
+    
+    disableAutorole: (guildId) => {
+        db.prepare('UPDATE autorole_configs SET enabled = 0 WHERE guild_id = ?')
+            .run(guildId);
+    },
+    
+    enableAutorole: (guildId) => {
+        db.prepare('UPDATE autorole_configs SET enabled = 1 WHERE guild_id = ?')
+            .run(guildId);
+    },
+    
+    removeAutorole: (guildId) => {
+        db.prepare('DELETE FROM autorole_configs WHERE guild_id = ?')
+            .run(guildId);
+    },
+    
+    getAllAutoroles: () => {
+        return db.prepare('SELECT * FROM autorole_configs').all();
     }
 };

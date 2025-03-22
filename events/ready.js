@@ -11,6 +11,7 @@ module.exports = {
 	// handler whenever the event emits
 	execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
+        console.log(`Testing database...\n`);
 
         try {
             const configs = db.getAllReactionRoleConfigs();
@@ -25,5 +26,27 @@ module.exports = {
         } catch (error) {
             console.error('❌ Failed to check message log settings:', error);
         }
+
+        try {
+            const configs = db.getAllJoinNotificationSettings();
+            console.log(`✅ Found ${configs.length} join notification settings in the database.`);
+        } catch (error) {
+            console.error('❌ Failed to check message log settings:', error);
+        }
+
+        try {
+            const configs = db.getAllAutoroles();
+            console.log(`✅ Found ${configs.length} auto role settings in the database.`);
+        } catch (error) {
+            console.error('❌ Failed to check message log settings:', error);
+        }
+
+        try {
+            const configs = db.getAll();
+            console.log(`✅ Found ${configs.length} auto role settings in the database.`);
+        } catch (error) {
+            console.error('❌ Failed to check message log settings:', error);
+        }
+
 	},
 };
