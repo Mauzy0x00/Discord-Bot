@@ -186,7 +186,8 @@ create_config_file() {
     "tenorAPI": "$TENOR_API"
 }
 EOF
-    export OPENAI_API_KEY="$OPENAI_API_KEY" # Why do they do it like this? I wonder.
+    echo "export OPENAI_API_KEY=\"$OPENAI_API_KEY\"" >> ~/.bashrc
+    source ~/.bashrc # Why do they do it like this? I wonder.
 
     echo -e "${GREEN}config.json created successfully${NC}"
 }
