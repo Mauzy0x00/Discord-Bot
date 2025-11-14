@@ -123,10 +123,25 @@ module.exports = {
             }
             
             console.log('Sending log embed to channel');
-            
+
+
+        try {
             // Send the log embed
             await logChannel.send({ embeds: [embed] });
             console.log('Message edit log sent successfully');
+
+        } catch (error) {
+            // Handle missing permissions
+            if (error.code === 50013) { // Missing Permissions
+                console.error(`Missing permissions to send messages in log channel ID ${logChannelId} of guild ${message.guild.name}`);
+                
+            } else if (error.code === 50001) { // Missing Access
+                console.error(`Missing access to log channel ID ${logChannelId} of guild ${message.guild.name}`);
+
+            } else {
+                console.error(`Error sending deleted message log: ${error.message}`);
+            }
+        }
         } catch (error) {
             console.error('Error in MessageUpdate event handler:', error);
         }

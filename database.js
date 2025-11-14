@@ -65,6 +65,15 @@ db.prepare(`
     )
 `).run();
 
+// Movies Configuration Table
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS movies (
+        guild_id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        movie TEXT NOT NULL
+    )
+    `).run();
+
 module.exports = {
     // Reaction roles
     addReactionRoleConfig: (messageId, guildId, emoji, roleId) => {
@@ -191,5 +200,17 @@ module.exports = {
     
     getAllAutoroles: () => {
         return db.prepare('SELECT * FROM autorole_configs').all();
+    },
+
+
+    // Movie functions 
+    getMovies: () => {
+        return db.prepare('SELECT * FROM movies').all();
+    },
+
+    addMovie: (guildId, user_id, movie) => {
+        db.prepare('INSERT OR REPLACE INTO movies (guild_id, user_id, movie)  VALUES (?, ?, ?)')
+            .run(guildId, user_id, movie);
     }
+    
 };

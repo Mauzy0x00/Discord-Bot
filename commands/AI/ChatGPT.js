@@ -21,7 +21,7 @@ module.exports = {
 
           // Retreive language model and create completion
           const completion = await openai.chat.completions.create({  // API Change
-              model: "o1-mini",
+              model: "gpt-4.1",
               messages: [{role: "user", content: `\`${prompt}\``}],
             });
           
@@ -63,7 +63,7 @@ module.exports = {
               .setDescription(prompt)
               .setAuthor({ name: 'AI Interface', iconURL: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fcommons%2Fthumb%2F0%2F04%2FChatGPT_logo.svg%2F1200px-ChatGPT_logo.svg.png&f=1&nofb=1&ipt=dd92c63f8df347da0a856f7ed557712d5b1648004fb0c687f8278b15dcc17f6d&ipo=images'})
               .addFields({ name: 'AI response:', value: response })
-              .setFooter({ text: 'Response by ChatGPT o1'});
+              .setFooter({ text: 'Response by ChatGPT 4.1'});
 
             await interaction.editReply({ embeds: [GPTresponseEmbed]});
           

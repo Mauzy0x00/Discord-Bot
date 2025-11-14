@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits, PermissionsBitField  } = require('discord.js');
 const db = require('../../database');
 
 module.exports = {
@@ -27,6 +27,7 @@ module.exports = {
         const guildId = interaction.guild.id;
         const subcommand = interaction.options.getSubcommand();
         
+        /// Set subcommand
         if (subcommand === 'set') {
             const channel = interaction.options.getChannel('channel');
             
@@ -34,6 +35,20 @@ module.exports = {
             if (!channel.isTextBased()) {
                 return interaction.reply({ 
                     content: 'Please select a text channel for logging messages.', 
+                    flags: MessageFlags.Ephemeral
+                });
+            } 
+            // Ensure the bot has permission to send messages in the selected channel
+            else if (interaction.channel.permissionsFor(interaction.guild.members.me).has('SendMessages', true)) {
+                return interaction.reply({ 
+                    content: 'I do not have permission to send messages in the selected channel. Please choose a different channel or adjust my permissions.',
+                    flags: MessageFlags.Ephemeral
+                });
+            }
+            // Ensure the bot has accesss to the selected channel
+            else if (interaction.channel.permissionsFor(interaction.guild.members.me).has('ViewChannel', true)) {
+                return interaction.reply({ 
+                    content: 'I do not have access to the selected channel. Please choose a different channel or adjust my permissions.',
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -46,6 +61,8 @@ module.exports = {
                 flags: MessageFlags.Ephemeral
             });
         } 
+
+        /// Remove subcommand
         else if (subcommand === 'remove') {
             // Check if there's a log channel set
             const logSettings = db.getMessageLogChannel(guildId);
@@ -70,6 +87,8 @@ module.exports = {
                 flags: MessageFlags.Ephemeral
             });
         }
+
+        /// Show subcommand
         else if (subcommand === 'show') {
             // Check if there's a log channel set
             const logSettings = db.getMessageLogChannel(guildId);

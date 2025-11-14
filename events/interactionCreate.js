@@ -1,6 +1,6 @@
 // Every slash command is an interaction, so to respond to a command, you need to create a listener for the client#event:interactionCreate event that will execute code when your application receives an interaction.
 // This snippet will create the listener
-const { Events } = require('discord.js');
+const { Events, MessageFlags } = require('discord.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
