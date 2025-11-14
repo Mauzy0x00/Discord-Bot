@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const db = require('../database.js');
+const db = require('../utils/database.js');
 
 // When the client is ready, run this code (only once)
 module.exports = {

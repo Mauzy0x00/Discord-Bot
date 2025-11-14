@@ -1,6 +1,6 @@
 // commands/autorole.js
 const { SlashCommandBuilder, MessageFlags, PermissionFlagsBits } = require('discord.js');
-const db = require('../../database');
+const db = require('../../utils/database.js');
 
 module.exports = {
     data: new SlashCommandBuilder()

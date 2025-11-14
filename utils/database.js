@@ -68,7 +68,8 @@ db.prepare(`
 // Movies Configuration Table
 db.prepare(`
     CREATE TABLE IF NOT EXISTS movies (
-        guild_id TEXT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        guild_id TEXT NOT NULL,
         user_id TEXT NOT NULL,
         movie TEXT NOT NULL
     )
@@ -204,13 +205,20 @@ module.exports = {
 
 
     // Movie functions 
-    getMovies: () => {
-        return db.prepare('SELECT * FROM movies').all();
+    getMovies: (guildId) => {
+        return db.prepare('SELECT * FROM movies WHERE guild_id = ?')
+            .all(guildId);
     },
 
     addMovie: (guildId, user_id, movie) => {
-        db.prepare('INSERT OR REPLACE INTO movies (guild_id, user_id, movie)  VALUES (?, ?, ?)')
+        db.prepare('INSERT INTO movies (guild_id, user_id, movie)  VALUES (?, ?, ?)')
             .run(guildId, user_id, movie);
+    },
+
+    removeMovie: (movieID, guildId) => {
+        const result = db.prepare('DELETE FROM movies WHERE id = ? AND guild_id = ?)')
+            .run(movieID, guildId);
+        return result.changes > 0; // Return true if a row was deleted
     }
     
 };
